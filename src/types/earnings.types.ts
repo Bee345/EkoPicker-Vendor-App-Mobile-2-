@@ -38,10 +38,10 @@ export type PayoutStatus = 'pending' | 'processing' | 'success' | 'failed' | 're
 export interface PayoutAccount {
   _id: string;
   vendorId: string;
-  bankCode: string;          // Paystack bank code (e.g. "058" for GTB)
-  bankName: string;          // Resolved display name
-  accountNumber: string;     // Last 4 typically masked client-side
-  accountName: string;       // Resolved by Paystack /bank/resolve at server
+  bankCode: string; // Paystack bank code (e.g. "058" for GTB)
+  bankName: string; // Resolved display name
+  accountNumber: string; // Last 4 typically masked client-side
+  accountName: string; // Resolved by Paystack /bank/resolve at server
   currency: 'NGN';
   /** Paystack returns this on first save; we never expose it client-side. */
   recipientCodePresent: boolean;
@@ -57,7 +57,7 @@ export interface SavePayoutAccountDto {
 export interface Payout {
   _id: string;
   vendorId: string;
-  amount: number;            // in kobo or major units — match backend; here: major (₦)
+  amount: number; // in kobo or major units — match backend; here: major (₦)
   status: PayoutStatus;
   /** Paystack transfer reference */
   reference: string;

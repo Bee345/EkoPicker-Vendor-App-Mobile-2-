@@ -33,13 +33,14 @@ import { formatTransactionDate } from '../../utils/formatDate';
 import { parseApiError } from '../../utils/apiError';
 import { Bank, Payout, PayoutStatus } from '../../types/earnings.types';
 
-const STATUS_VARIANT: Record<PayoutStatus, 'success' | 'warning' | 'info' | 'danger' | 'neutral'> = {
-  success: 'success',
-  pending: 'warning',
-  processing: 'info',
-  failed: 'danger',
-  reversed: 'danger',
-};
+const STATUS_VARIANT: Record<PayoutStatus, 'success' | 'warning' | 'info' | 'danger' | 'neutral'> =
+  {
+    success: 'success',
+    pending: 'warning',
+    processing: 'info',
+    failed: 'danger',
+    reversed: 'danger',
+  };
 
 export function PayoutsScreen() {
   const { data: summary } = useEarningsSummary();
@@ -178,10 +179,7 @@ function AccountForm({
   const [bankCode, setBankCode] = useState(initialBankCode ?? '');
   const [accountNumber, setAccountNumber] = useState(initialAccountNumber ?? '');
 
-  const selectedBank = useMemo(
-    () => banks?.find((b) => b.code === bankCode),
-    [banks, bankCode],
-  );
+  const selectedBank = useMemo(() => banks?.find((b) => b.code === bankCode), [banks, bankCode]);
 
   const handleSave = async () => {
     if (!bankCode) return Alert.alert('Pick a bank');
@@ -333,7 +331,9 @@ function RequestPayoutButton({
   return (
     <Button
       title={
-        numeric > available ? 'Exceeds balance' : `Request ${numeric > 0 ? formatCurrencyCompact(numeric) : 'Payout'}`
+        numeric > available
+          ? 'Exceeds balance'
+          : `Request ${numeric > 0 ? formatCurrencyCompact(numeric) : 'Payout'}`
       }
       fullWidth
       size="lg"
@@ -371,9 +371,7 @@ function PayoutRow({ payout }: { payout: Payout }) {
         <Text style={styles.payoutDate}>
           {formatTransactionDate(payout.completedAt ?? payout.initiatedAt)}
         </Text>
-        {payout.failureReason && (
-          <Text style={styles.payoutErr}>{payout.failureReason}</Text>
-        )}
+        {payout.failureReason && <Text style={styles.payoutErr}>{payout.failureReason}</Text>}
       </View>
       <Badge label={payout.status} variant={STATUS_VARIANT[payout.status]} size="sm" />
     </View>
@@ -387,8 +385,19 @@ const styles = StyleSheet.create({
     padding: 24,
     marginBottom: 18,
   },
-  balanceLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: '600', marginBottom: 6 },
-  balanceAmount: { color: '#fff', fontSize: 32, fontWeight: '900', letterSpacing: -1, marginBottom: 4 },
+  balanceLabel: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 12,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+  balanceAmount: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: '900',
+    letterSpacing: -1,
+    marginBottom: 4,
+  },
   balanceSub: { color: 'rgba(255,255,255,0.5)', fontSize: 12, fontWeight: '500' },
 
   sectionTitle: {

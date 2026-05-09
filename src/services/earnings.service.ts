@@ -24,12 +24,60 @@ const MOCK_SUMMARY: EarningsSummary = {
 };
 
 const MOCK_TRANSACTIONS: Transaction[] = [
-  { _id: 't1', type: 'order_income', title: 'Order #212323', amount: 51500, status: 'completed', reference: 'ORD-212323', createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
-  { _id: 't2', type: 'order_income', title: 'Order #212322', amount: 11500, status: 'completed', reference: 'ORD-212322', createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
-  { _id: 't3', type: 'payout', title: 'Weekly Payout', amount: -250000, status: 'completed', reference: 'PAY-001', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString() },
-  { _id: 't4', type: 'order_income', title: 'Order #212320', amount: 23500, status: 'failed', reference: 'ORD-212320', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString() },
-  { _id: 't5', type: 'order_income', title: 'Order #212319', amount: 29600, status: 'completed', reference: 'ORD-212319', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString() },
-  { _id: 't6', type: 'fee', title: 'Platform Fee', amount: -4750, status: 'completed', reference: 'FEE-001', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString() },
+  {
+    _id: 't1',
+    type: 'order_income',
+    title: 'Order #212323',
+    amount: 51500,
+    status: 'completed',
+    reference: 'ORD-212323',
+    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+  },
+  {
+    _id: 't2',
+    type: 'order_income',
+    title: 'Order #212322',
+    amount: 11500,
+    status: 'completed',
+    reference: 'ORD-212322',
+    createdAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+  },
+  {
+    _id: 't3',
+    type: 'payout',
+    title: 'Weekly Payout',
+    amount: -250000,
+    status: 'completed',
+    reference: 'PAY-001',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
+  },
+  {
+    _id: 't4',
+    type: 'order_income',
+    title: 'Order #212320',
+    amount: 23500,
+    status: 'failed',
+    reference: 'ORD-212320',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+  },
+  {
+    _id: 't5',
+    type: 'order_income',
+    title: 'Order #212319',
+    amount: 29600,
+    status: 'completed',
+    reference: 'ORD-212319',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
+  },
+  {
+    _id: 't6',
+    type: 'fee',
+    title: 'Platform Fee',
+    amount: -4750,
+    status: 'completed',
+    reference: 'FEE-001',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50).toISOString(),
+  },
 ];
 
 const MOCK_WEEKLY_CHART: ChartDataPoint[] = [
