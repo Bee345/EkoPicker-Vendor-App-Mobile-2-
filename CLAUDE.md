@@ -257,6 +257,7 @@ This keeps cost-per-task low without sacrificing depth on the things that matter
 | `API_DOCS.md` | Authoritative REST + Socket.io contract. |
 | `PROCESS_PLAN.md` | Phased roadmap (Phase 0 → 7) with exit criteria + risk register. |
 | `SERVER_SETUP.md` | One-time manual steps for SonarCloud / Sentry / EAS / Apple / Google / GCP. |
+| `SCALE.md` | Production-scale playbook — what mobile already does, what backend must do, load-test scenario, cost ceilings. |
 | `API_SPECIFICATION.md` | Original short spec — kept for history; `API_DOCS.md` supersedes. |
 | `BACKEND_IMPLEMENTATION_PLAN.txt` / `BACKEND_COST_SCOPE.txt` | ❌ Unrelated ("TrustBase"). Ignore. |
 

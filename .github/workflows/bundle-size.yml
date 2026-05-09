@@ -1,0 +1,78 @@
+name: Bundle Size
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: bundle-size-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  measure:
+    name: Measure JS bundle size
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # need HEAD~1 for diff
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Export web bundle (PR)
+        run: |
+          npx expo export --platform web --output-dir _bundle_pr || true
+          if [ -d _bundle_pr ]; then
+            BUNDLE_SIZE_PR=$(du -sb _bundle_pr | cut -f1)
+            echo "BUNDLE_SIZE_PR=$BUNDLE_SIZE_PR" >> $GITHUB_ENV
+            echo "PR bundle: $(du -sh _bundle_pr | cut -f1)"
+          else
+            echo "BUNDLE_SIZE_PR=0" >> $GITHUB_ENV
+          fi
+
+      - name: Checkout base
+        run: git checkout ${{ github.event.pull_request.base.sha }} -- .
+
+      - name: Reinstall on base
+        run: npm ci --legacy-peer-deps
+
+      - name: Export web bundle (base)
+        run: |
+          npx expo export --platform web --output-dir _bundle_base || true
+          if [ -d _bundle_base ]; then
+            BUNDLE_SIZE_BASE=$(du -sb _bundle_base | cut -f1)
+            echo "BUNDLE_SIZE_BASE=$BUNDLE_SIZE_BASE" >> $GITHUB_ENV
+            echo "Base bundle: $(du -sh _bundle_base | cut -f1)"
+          else
+            echo "BUNDLE_SIZE_BASE=0" >> $GITHUB_ENV
+          fi
+
+      - name: Compare
+        run: |
+          PR=${BUNDLE_SIZE_PR:-0}
+          BASE=${BUNDLE_SIZE_BASE:-0}
+          if [ "$BASE" -eq 0 ]; then
+            echo "::warning::Could not measure base bundle — skipping comparison."
+            exit 0
+          fi
+          DELTA=$((PR - BASE))
+          DELTA_KB=$((DELTA / 1024))
+          PCT=$((DELTA * 100 / BASE))
+          echo "Bundle size delta: ${DELTA_KB} KB (${PCT}%)"
+
+          # Fail if grew > 10% AND > 500 KB. Either alone is fine; both is regression.
+          if [ "$PCT" -gt 10 ] && [ "$DELTA_KB" -gt 500 ]; then
+            echo "::error::Bundle grew by ${DELTA_KB} KB (${PCT}%). Review imports."
+            exit 1
+          fi
+          if [ "$PCT" -gt 0 ]; then
+            echo "::notice::Bundle grew by ${DELTA_KB} KB (${PCT}%) — under threshold."
+          else
+            echo "::notice::Bundle shrunk by $((-DELTA_KB)) KB."
+          fi

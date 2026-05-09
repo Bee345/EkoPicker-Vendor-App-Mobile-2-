@@ -44,13 +44,16 @@ When in doubt, start with Sonnet 4.6 — it covers most engineering work.
 | P1-01 | Replace every `useNavigation<any>()` and `useRoute<any>()` with typed param lists (`AppStackParamList`, per-stack types) | Sonnet 4.6 | Open |
 | P1-02 | Move mock data to `src/__mocks__/` and conditionally import only when `EXPO_PUBLIC_USE_MOCK=true` so it tree-shakes out of production | Sonnet 4.6 | Open |
 | P1-03 | Add pagination support to `getProducts`, `getOrders`, `getChats`, `getMessages` — `PAGE_SIZE = 20` already exists | Sonnet 4.6 | Open |
-| P1-04 | Pause `useOrders` and `useDashboardStats` polling when `AppState !== 'active'` to save battery | Sonnet 4.6 | Open |
+| P1-04 | Pause `useOrders` and `useDashboardStats` polling when `AppState !== 'active'` to save battery | Sonnet 4.6 | Done (2026-05-09 — `src/services/queryClient.ts` wires AppState → focusManager) |
 | P1-05 | Pass `AbortSignal` to all axios queries so navigation cancels in-flight requests | Sonnet 4.6 | Open |
 | P1-06 | Implement `isDarkMode` properly (decided 2026-05-08 — proceed): theme provider + apply across screens. Recommend rolling our own with `COLORS_LIGHT` / `COLORS_DARK` exports rather than pulling in a UI library. | Opus 4.7 (architecture) + Sonnet 4.6 (codemod) | Open |
 | P1-07 | `react-native-reanimated/plugin` should be the **last** plugin in `babel.config.js` — verify ordering after any changes | Haiku 4.5 (currently is last) | Done (verified) |
 | P1-08 | Add `accessibilityLabel` / `accessibilityRole` to every icon-only `TouchableOpacity` | Haiku 4.5 | Open |
-| P1-09 | Switch from `socket.io-client` `transports: ['websocket']` only — allow `polling` fallback for restrictive networks | Sonnet 4.6 | Open |
+| P1-09 | Switch from `socket.io-client` `transports: ['websocket']` only — allow `polling` fallback for restrictive networks | Sonnet 4.6 | Done (2026-05-09) |
 | P1-10 | Avatar fallback `name?.[0]` is not surrogate-pair-safe — use `Array.from(name)[0]` for emoji/non-BMP names | Haiku 4.5 | Open |
+| P1-11 | TLS certificate pinning on the API host (mitigates MITM on hostile WiFi) | Sonnet 4.6 — needs custom dev client (Expo prebuild) | Open |
+| P1-12 | i18n scaffolding (`i18next` + `react-i18next`) — extract every hardcoded English string. Yoruba/Igbo/Hausa to follow | Sonnet 4.6 (codemod-heavy) | Open |
+| P1-13 | Convert `useOrders` / `useProducts` / `useChats` to `useInfiniteQuery` for proper pagination | Sonnet 4.6 | Open |
 
 ## P2 — Medium priority (tech debt, ergonomics)
 
@@ -61,7 +64,7 @@ When in doubt, start with Sonnet 4.6 — it covers most engineering work.
 | P2-03 | Add Jest + RN Testing Library unit tests for `formatCurrency`, `formatDate`, the auth store, and the chat hook | Sonnet 4.6 | Open |
 | P2-04 | Add Detox (or Maestro) e2e tests for login → dashboard → place-order pipeline | Sonnet 4.6 | Open |
 | P2-05 | Implement multi-image carousel + zoom on `ProductDetailsScreen` | Sonnet 4.6 | Open |
-| P2-06 | Image upload: currently the picker stores local URIs; a real backend needs upload to S3/Cloudinary first → swap URIs for hosted URLs | Sonnet 4.6 | Open |
+| P2-06 | Image upload: signed-URL flow shipped (`src/services/uploads.service.ts`), wired into `AddProductScreen`. Backend must implement `POST /vendor/uploads/sign`. | Sonnet 4.6 | Done — mobile (2026-05-09); backend pending |
 | P2-07 | Order list could grow to thousands — switch from `FlatList` + filtering to `useInfiniteQuery` + server-side filter | Sonnet 4.6 | Open |
 | P2-08 | `ChangePasswordScreen` doesn't sign the user out after change — typical UX is to force re-login | Haiku 4.5 | Open |
 | P2-09 | Add password-strength meter to register/change password | Haiku 4.5 | Open |
@@ -88,6 +91,22 @@ When in doubt, start with Sonnet 4.6 — it covers most engineering work.
 - Screen: `src/screens/earnings/PayoutsScreen.tsx` — balance card, account form (with bank picker modal + 10-digit account validation), request-payout flow (amount + 25/50/Max quick pills + confirmation alert), history list with status badges.
 - Navigation: `SCREENS.PAYOUTS` added; route registered in `MoreStack`. EarningsScreen has a `Pending Payout` CTA banner that navigates here.
 - Backend contract: `API_DOCS.md` § "Payouts (Paystack)" defines all six endpoints (banks list, account get/save, history, request, webhook) plus the ledger schema recommendation.
+
+## Scale upgrades (shipped 2026-05-09)
+
+These move the app from "works locally" to "survives 10K vendors". See `SCALE.md` for the full playbook.
+
+- ✅ **Polling pauses on background** — `src/services/queryClient.ts` wires `AppState` → `focusManager`. Saves ~333 RPS on the orders endpoint at year-1 scale.
+- ✅ **Online-state aware** — NetInfo → `onlineManager`. No queries fire on disconnected networks.
+- ✅ **Persistent query cache** — `@tanstack/react-query-persist-client` + AsyncStorage. 24h TTL. Auth/chats/messages/payouts deliberately excluded.
+- ✅ **Exponential backoff with jitter** — retries up to 3× with 1s × 2^n + 30% jitter, capped at 30s. 4xx (except 408/429) skip retry.
+- ✅ **Socket re-auth on token rotation** — `refreshSocketAuth()` called from `api.ts` after a successful refresh; sockets re-handshake with the new token. Polling-fallback transport added for restrictive networks.
+- ✅ **Sentry hardened** — per-environment sample rates, replay throttled, `beforeSend` PII redactor (passwords, tokens, account numbers, phone, email), `setUserContext` on login, cleared on logout.
+- ✅ **Image upload (signed-URL)** — `src/services/uploads.service.ts` implements two-step `POST /vendor/uploads/sign → PUT to storage`. AddProductScreen uses it. Mobile enforces `maxBytes` client-side.
+- ✅ **EAS staging channel** — `eas.json` has `development / preview / staging / production`. OTA workflow targets `staging`; tag push targets `production`.
+- ✅ **Tag-gated production deploys** — `.github/workflows/main.yml` only builds production on `v*.*.*` tag pushes. Push to `main` only triggers an OTA staging update.
+- ✅ **Bundle-size CI check** — `.github/workflows/bundle-size.yml` fails PRs that grow the JS bundle by > 10% AND > 500 KB.
+- ✅ **`SCALE.md`** — backend scale playbook (Postgres indexes/partitioning/pooling, Redis socket adapter, S3 + CDN, observability targets, k6 load-test scenario, cost ceilings).
 
 ## Audit fixes already applied
 

@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { STORAGE_KEYS } from '../utils/storageKeys';
+import { refreshSocketAuth } from './socket';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 if (!API_URL) {
@@ -47,6 +48,8 @@ async function refreshAccessToken(): Promise<string | null> {
       if (newRefresh) {
         await SecureStore.setItemAsync(STORAGE_KEYS.REFRESH_TOKEN, newRefresh);
       }
+      // Long-lived sockets need the new token too — drop & reconnect.
+      void refreshSocketAuth();
       return accessToken;
     } catch {
       return null;

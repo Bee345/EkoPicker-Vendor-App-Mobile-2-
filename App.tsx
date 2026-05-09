@@ -1,39 +1,48 @@
 import './global.css';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { ErrorBoundary } from './src/components/layout/ErrorBoundary';
 import { initSentry } from './src/services/sentry';
+import {
+  queryClient,
+  attachAppStateFocus,
+  attachNetInfoOnline,
+  detachAll,
+} from './src/services/queryClient';
+import { queryPersister, dehydrateOptions, PERSIST_BUSTER } from './src/services/queryPersister';
 
-// No-op when EXPO_PUBLIC_SENTRY_DSN is unset, so safe to call before deps install.
+// No-op when EXPO_PUBLIC_SENTRY_DSN is unset — safe at any startup phase.
 initSentry();
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 2,
-      gcTime: 1000 * 60 * 10,
-      retry: 2,
-      refetchOnWindowFocus: false,
-    },
-    mutations: {
-      retry: 0,
-    },
-  },
-});
-
 export default function App() {
+  useEffect(() => {
+    attachAppStateFocus();
+    attachNetInfoOnline();
+    return () => detachAll();
+  }, []);
+
   return (
     <ErrorBoundary>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
-          <QueryClientProvider client={queryClient}>
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={{
+              persister: queryPersister,
+              maxAge: 1000 * 60 * 60 * 24, // 24h
+              buster: PERSIST_BUSTER,
+              // Loose type — the persister's vendored query-core has a
+              // different nominal Query symbol but the runtime shape matches.
+              dehydrateOptions: dehydrateOptions as unknown as object,
+            }}
+          >
             <StatusBar style="auto" />
             <RootNavigator />
-          </QueryClientProvider>
+          </PersistQueryClientProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
     </ErrorBoundary>

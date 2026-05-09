@@ -3,28 +3,54 @@ import * as SecureStore from 'expo-secure-store';
 import { STORAGE_KEYS } from '../utils/storageKeys';
 
 const SOCKET_URL = process.env.EXPO_PUBLIC_SOCKET_URL;
-if (!SOCKET_URL && __DEV__) {
-  console.warn('[socket] EXPO_PUBLIC_SOCKET_URL is not set — real-time disabled');
-}
 
 let socket: Socket | null = null;
+let lastVendorId: string | null = null;
 
 /**
  * Connect the Socket.io client and attach the vendor's JWT.
- * Call this after successful login.
+ *
+ * Scale concerns:
+ *  • Re-reads the token on every (re)connect attempt so a refreshed access token
+ *    is picked up automatically.
+ *  • Reconnect with exponential backoff (handled by socket.io defaults).
+ *  • If the server kicks us with `connect_error: jwt expired`, we tear down and
+ *    let the next reconnect grab the new token.
  */
-export const connectSocket = async (): Promise<Socket | null> => {
+export const connectSocket = async (vendorId?: string): Promise<Socket | null> => {
   if (!SOCKET_URL) return null;
   if (socket?.connected) return socket;
+  if (vendorId) lastVendorId = vendorId;
 
   const token = await SecureStore.getItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
 
   socket = io(SOCKET_URL, {
     auth: { token },
-    transports: ['websocket'],
+    transports: ['websocket', 'polling'], // allow polling fallback for restrictive networks
     reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 3000,
+    reconnectionAttempts: Infinity, // keep trying — UI shows offline state separately
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 30000, // exponential cap
+    randomizationFactor: 0.3, // jitter
+    timeout: 10000,
+  });
+
+  // Re-fetch token on each reconnect attempt to pick up rotations.
+  socket.io.on('reconnect_attempt', async () => {
+    const fresh = await SecureStore.getItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
+    if (socket) (socket.auth as { token?: string }).token = fresh ?? undefined;
+  });
+
+  socket.on('connect_error', (err) => {
+    if (
+      typeof err?.message === 'string' &&
+      /jwt|auth|token/i.test(err.message)
+    ) {
+      // Token rejected — drop the socket, let the auth store force re-login or
+      // the next reconnect refresh the token.
+      socket?.disconnect();
+      socket = null;
+    }
   });
 
   return socket;
@@ -44,14 +70,24 @@ export const onSocketReady = (cb: (s: Socket) => void): void => {
 export const disconnectSocket = (): void => {
   socket?.disconnect();
   socket = null;
+  lastVendorId = null;
 };
 
 /** Get the current socket instance (may be null if not connected). */
 export const getSocket = (): Socket | null => socket;
 
+/** Used by token-refresh handler to force a re-handshake with the new token. */
+export const refreshSocketAuth = async (): Promise<void> => {
+  if (!socket) return;
+  socket.disconnect();
+  socket = null;
+  if (lastVendorId) await connectSocket(lastVendorId);
+};
+
 // ─── Typed event emitters ─────────────────────────────────────────────────
 
 export const joinVendorRoom = (vendorId: string): void => {
+  lastVendorId = vendorId;
   socket?.emit('join_vendor_room', { vendorId });
 };
 

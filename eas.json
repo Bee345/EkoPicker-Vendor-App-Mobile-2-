@@ -7,7 +7,11 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development"
+      "channel": "development",
+      "env": {
+        "EXPO_PUBLIC_USE_MOCK": "true",
+        "EXPO_PUBLIC_ENV": "development"
+      }
     },
     "preview": {
       "distribution": "internal",
@@ -15,6 +19,18 @@
       "android": { "buildType": "apk" },
       "env": {
         "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_ENV": "preview",
+        "EXPO_PUBLIC_API_URL": "https://staging-api.ekopicker.com/api",
+        "EXPO_PUBLIC_SOCKET_URL": "https://staging-api.ekopicker.com"
+      }
+    },
+    "staging": {
+      "distribution": "internal",
+      "channel": "staging",
+      "android": { "buildType": "apk" },
+      "env": {
+        "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_ENV": "staging",
         "EXPO_PUBLIC_API_URL": "https://staging-api.ekopicker.com/api",
         "EXPO_PUBLIC_SOCKET_URL": "https://staging-api.ekopicker.com"
       }
@@ -24,6 +40,7 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_ENV": "production",
         "EXPO_PUBLIC_API_URL": "https://api.ekopicker.com/api",
         "EXPO_PUBLIC_SOCKET_URL": "https://api.ekopicker.com"
       }

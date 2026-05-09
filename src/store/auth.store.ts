@@ -4,6 +4,7 @@ import { Vendor, LoginDto, RegisterDto } from '../types/auth.types';
 import { authService } from '../services/auth.service';
 import { connectSocket, disconnectSocket, joinVendorRoom, onSocketReady } from '../services/socket';
 import { setAuthExpiredHandler } from '../services/api';
+import { setUserContext } from '../services/sentry';
 import { STORAGE_KEYS } from '../utils/storageKeys';
 
 interface AuthState {
@@ -34,8 +35,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await authService.saveTokens(response.tokens.accessToken, response.tokens.refreshToken);
       await SecureStore.setItemAsync(STORAGE_KEYS.VENDOR_ID, response.vendor._id);
 
-      const socket = await connectSocket();
+      const socket = await connectSocket(response.vendor._id);
       if (socket) onSocketReady(() => joinVendorRoom(response.vendor._id));
+      setUserContext(response.vendor._id);
 
       set({ vendor: response.vendor, isAuthenticated: true, isLoading: false });
     } catch (err: any) {
@@ -58,6 +60,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   logout: async () => {
     disconnectSocket();
+    setUserContext(null);
     await authService.logout();
     set({ vendor: null, isAuthenticated: false, error: null });
   },
@@ -65,6 +68,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   // Called by api.ts when refresh fails — bounce back to login UI.
   forceLogout: async () => {
     disconnectSocket();
+    setUserContext(null);
     await SecureStore.deleteItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
     await SecureStore.deleteItemAsync(STORAGE_KEYS.REFRESH_TOKEN);
     await SecureStore.deleteItemAsync(STORAGE_KEYS.VENDOR_ID);
@@ -81,8 +85,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
       const vendor = await authService.getProfile();
       if (vendor.status === 'approved') {
-        const socket = await connectSocket();
+        const socket = await connectSocket(vendor._id);
         if (socket) onSocketReady(() => joinVendorRoom(vendor._id));
+        setUserContext(vendor._id);
       }
       set({ vendor, isAuthenticated: vendor.status === 'approved', isLoading: false });
     } catch {

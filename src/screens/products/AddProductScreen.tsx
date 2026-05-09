@@ -12,6 +12,8 @@ import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import { useCreateProduct } from '../../hooks/useProducts';
 import { useAuthStore } from '../../store/auth.store';
+import { uploadsService } from '../../services/uploads.service';
+import { parseApiError } from '../../utils/apiError';
 import { COLORS } from '../../utils/constants';
 
 const schema = z.object({
@@ -42,6 +44,7 @@ export function AddProductScreen() {
   const createMutation = useCreateProduct();
   const [images, setImages] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const cats = CATEGORIES[vendor?.businessType ?? 'retail'] ?? CATEGORIES.retail;
 
@@ -73,12 +76,22 @@ export function AddProductScreen() {
 
   const onSubmit = async (values: FormValues) => {
     try {
+      // Upload local image URIs to storage first; backend can only accept HTTPS URLs.
+      // Mock mode short-circuits and hands back the same URIs.
+      setUploading(true);
+      const remoteImages = await Promise.all(
+        images.map((uri) =>
+          uri.startsWith('http') ? Promise.resolve(uri) : uploadsService.uploadImage(uri),
+        ),
+      );
+      setUploading(false);
+
       await createMutation.mutateAsync({
         name: values.name,
         description: values.description,
         price: Number(values.price),
         category: values.category,
-        images,
+        images: remoteImages,
         brand: values.brand,
         sku: values.sku,
         quantityInStock: values.quantityInStock ? Number(values.quantityInStock) : undefined,
@@ -87,8 +100,9 @@ export function AddProductScreen() {
       Alert.alert('Success', 'Product added successfully!', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (err: any) {
-      Alert.alert('Error', err.message ?? 'Failed to add product.');
+    } catch (err) {
+      setUploading(false);
+      Alert.alert('Error', parseApiError(err, 'Failed to add product.'));
     }
   };
 
@@ -249,10 +263,10 @@ export function AddProductScreen() {
         </View>
 
         <Button
-          title="Add Product"
+          title={uploading ? 'Uploading images…' : 'Add Product'}
           fullWidth
           size="lg"
-          loading={createMutation.isPending}
+          loading={createMutation.isPending || uploading}
           onPress={handleSubmit(onSubmit)}
           style={{ marginTop: 8 }}
         />
