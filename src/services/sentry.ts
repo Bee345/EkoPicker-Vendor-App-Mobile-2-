@@ -14,7 +14,8 @@
 
 const DSN = process.env.EXPO_PUBLIC_SENTRY_DSN;
 const ENV =
-  process.env.EXPO_PUBLIC_ENV ?? (typeof __DEV__ !== 'undefined' && __DEV__ ? 'development' : 'production');
+  process.env.EXPO_PUBLIC_ENV ??
+  (typeof __DEV__ !== 'undefined' && __DEV__ ? 'development' : 'production');
 const RELEASE = process.env.EXPO_PUBLIC_APP_VERSION ?? '1.0.0';
 
 let initialised = false;

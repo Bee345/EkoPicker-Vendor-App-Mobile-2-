@@ -1,11 +1,6 @@
 import { AppState, AppStateStatus } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import {
-  QueryClient,
-  focusManager,
-  onlineManager,
-  DefaultOptions,
-} from '@tanstack/react-query';
+import { QueryClient, focusManager, onlineManager, DefaultOptions } from '@tanstack/react-query';
 
 /**
  * Production-grade QueryClient.

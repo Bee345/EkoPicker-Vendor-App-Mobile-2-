@@ -42,10 +42,7 @@ export const connectSocket = async (vendorId?: string): Promise<Socket | null> =
   });
 
   socket.on('connect_error', (err) => {
-    if (
-      typeof err?.message === 'string' &&
-      /jwt|auth|token/i.test(err.message)
-    ) {
+    if (typeof err?.message === 'string' && /jwt|auth|token/i.test(err.message)) {
       // Token rejected — drop the socket, let the auth store force re-login or
       // the next reconnect refresh the token.
       socket?.disconnect();
