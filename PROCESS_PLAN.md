@@ -121,27 +121,82 @@ By now the backend is real. Walk the TASKS.md P0/P1 list to zero.
 
 ---
 
-## Phase 5 — Beta distribution (week 6)
+## Phase 5 — Beta distribution (week 6) — **iOS + Android in parallel** (decided 2026-05-08)
 
-- Build with `eas build --profile preview` for both platforms.
-- TestFlight (iOS) — invite vendors as external testers (App Store review needed for 100+ testers).
-- Play Internal Testing (Android) — direct opt-in link.
-- Sentry release tagging — verify source maps resolve to readable filenames.
-- Run a closed beta for ≥ 1 week with at least 5 real vendors.
-- Triage Sentry issues + Sonar quality-gate failures.
+**Decision:** ship to both stores simultaneously. Android leads the timing because Play review is shorter; iOS proceeds in parallel and goes public when Apple Review approves.
 
-**Exit criterion:** No P0/P1 incident in 7 consecutive days of beta usage.
+### Phase 5a — Android Internal Testing (day 1)
+
+- `eas build --platform android --profile preview` → APK + AAB.
+- `eas submit --platform android --track internal` (or upload AAB manually first time).
+- Add testers to Play Internal Testing track via opt-in link.
+- **Exit criterion:** vendors can install via the Play opt-in link within ~30 min of upload.
+
+### Phase 5b — iOS TestFlight (day 1, parallel)
+
+- `eas build --platform ios --profile preview` → `.ipa` for ad-hoc / TestFlight.
+- `eas submit --platform ios` to TestFlight.
+- Wait for Apple "Ready to Test" status (usually < 24 h for first build, faster after).
+- Invite up to 10 000 external testers; under 100 internal testers needs no Apple review.
+- **Exit criterion:** vendors can install via TestFlight invite.
+
+### Phase 5c — Closed beta (days 2–7+)
+
+- ≥ 5 real vendors actively using the app on each platform.
+- Daily Sentry triage. Daily Sonar quality-gate review.
+- Track P0 incidents in `TASKS.md` and treat as blockers.
+- Use `eas update --branch preview` to ship JS-only fixes during beta — no rebuild needed.
+
+**Phase 5 exit criterion:** No P0/P1 incident in 7 consecutive days of beta usage **on both platforms**.
 
 ---
 
-## Phase 6 — Public launch (week 7)
+## Phase 6 — Public launch (week 7) — **iOS + Android dual submission**
 
-- `eas build --profile production` for iOS + Android.
-- `eas submit --profile production` to App Store + Play.
-- App Store / Play review (3–7 days iOS, 1–3 days Android).
-- Tag `v1.0.0` in git. Cut a Sentry release. Announce.
+### Phase 6a — Production builds (day 1)
 
-**Exit criterion:** Build is *Available* in both stores. Anyone can install it.
+- Bump `app.json` version → 1.0.0; build numbers auto-increment via `"autoIncrement": true` in production EAS profile.
+- `eas build --platform all --profile production` (parallel iOS + Android).
+- Smoke-test the production binaries against the production backend.
+
+### Phase 6b — Submit to stores (day 1–2)
+
+- `eas submit --platform android --profile production` → Play Console **Production** track. Closed → Open rollout staged at 10%.
+- `eas submit --platform ios --profile production` → App Store Connect → Submit for Review.
+- Pre-submission checklist (both):
+  - Privacy policy + ToS URLs live and reachable.
+  - App Store / Play Console listings: icons, screenshots (5.5" iPhone + 6.7" iPhone + Android phone+tablet), description, keywords, support URL.
+  - Apple data-privacy questionnaire updated (location: never, contacts: never, etc).
+  - Google Play Data Safety form updated.
+  - Demo account credentials provided to reviewers in Notes (separate from `EXPO_PUBLIC_USE_MOCK` demo).
+
+### Phase 6c — Reviews (days 2–9)
+
+- **Android Play review:** typically 1–3 days for Open Testing → Production promotion.
+- **Apple Review:** typically 1–3 days but can stretch to 5–7. First submissions get more scrutiny — be prepared for one iteration.
+- During this window, **do not push** breaking changes to `main` — keep the branch clean for hotfix.
+
+### Phase 6d — Staged rollout (day 9+)
+
+- Android: bump rollout from 10% → 25% → 50% → 100% over 3–5 days, watching Sentry crash-free rate (target ≥ 99.5%).
+- iOS: phased release (App Store Connect → Phased Release for Automatic Updates) over 7 days.
+
+### Phase 6e — Tag & announce
+
+- Tag `v1.0.0` in git. Cut a Sentry release `com.ekopicker.vendor@1.0.0`.
+- Announce to vendor mailing list / social channels.
+
+**Phase 6 exit criterion:** Both stores show *Available*. Crash-free rate ≥ 99.5% on each platform after first 24 h at 100% rollout.
+
+### Platform-specific watch list
+
+| Concern | iOS | Android |
+|---------|-----|---------|
+| Push notification setup | APNs `.p8` key in EAS credentials | `google-services.json` + Firebase project |
+| In-app payments review (if added later) | Apple takes 30% of digital goods | Google takes 30%, Paystack OK for physical goods |
+| Bundle identifier | `com.ekopicker.vendor` (committed) | `com.ekopicker.vendor` (committed) |
+| Minimum OS | iOS 13.4 (Expo SDK 51 default) | Android 6.0 / API 23 (Expo SDK 51 default) |
+| First-build wait | up to 24 h Apple Review | minutes |
 
 ---
 

@@ -349,13 +349,136 @@ Returns `Transaction[]`.
 
 | Endpoint | Why | Linked task |
 |----------|-----|-------------|
-| `POST /vendor/auth/forgot-password` | UI link exists, no flow | P0-02 |
+| `POST /vendor/auth/forgot-password` | UI link exists, no flow. Email-link reset (decided 2026-05-08) | P0-02 |
 | `POST /vendor/auth/reset-password` | Same | P0-02 |
 | `POST /vendor/uploads/image` | Multipart upload returning HTTPS URL | P2-06 |
 | `GET /vendor/notifications` | Replace hardcoded mock | P0-05 |
 | `PATCH /vendor/notifications/:id/read` | | P0-05 |
 | `POST /vendor/push-tokens` | Register Expo push token | P0-05 |
 | `PATCH /vendor/store-settings` | Real save for `StoreSettingsScreen` | P0-04 |
+
+---
+
+# Payouts (Paystack) — required for v1.0
+
+The mobile client (`PayoutsScreen`, `usePayouts`/`useRequestPayout`/`useSavePayoutAccount`) is wired against these endpoints. Backend is **not yet built** — this section is authoritative for the implementer.
+
+Paystack docs the backend will use:
+- `POST /transferrecipient` to create a Paystack recipient when the vendor saves a bank account.
+- `GET /bank/resolve` to verify the account number → account name.
+- `POST /transfer` to initiate the actual payout.
+- `POST /transfer/finalize_transfer` if OTP is required (for live keys).
+- Webhook `transfer.success`, `transfer.failed`, `transfer.reversed` to update status.
+
+## GET `/vendor/payouts/banks`
+
+**Auth:** required.
+
+Returns the static list of banks the backend supports for transfers. Likely fetched once and cached server-side from Paystack's `/bank` endpoint (filter to `country=nigeria&type=nuban`).
+
+```json
+[
+  { "code": "058", "name": "Guaranty Trust Bank" },
+  { "code": "044", "name": "Access Bank" }
+]
+```
+
+## GET `/vendor/payouts/account`
+
+**Auth:** required.
+
+Returns the vendor's saved payout account, or 404 if none.
+
+```json
+{
+  "_id": "pa_001",
+  "vendorId": "vendor_001",
+  "bankCode": "058",
+  "bankName": "Guaranty Trust Bank",
+  "accountNumber": "0123456789",
+  "accountName": "Etimobile Express Nigeria Limited",
+  "currency": "NGN",
+  "recipientCodePresent": true,
+  "createdAt": "2026-04-01T08:00:00.000Z",
+  "updatedAt": "2026-04-01T08:00:00.000Z"
+}
+```
+
+> The Paystack `recipient_code` itself **must not** be returned to the client. Only the boolean indicator that it exists.
+
+## POST `/vendor/payouts/account`
+
+**Auth:** required.
+
+Resolves the account name via Paystack `/bank/resolve`, creates a `transferrecipient`, persists it, and returns the saved account. If a previous account exists, replace and revoke the old recipient.
+
+Request:
+```json
+{ "bankCode": "058", "accountNumber": "0123456789" }
+```
+
+Errors:
+- 400 if account number isn't 10 digits.
+- 422 if Paystack `bank/resolve` rejects.
+
+## GET `/vendor/payouts`
+
+**Auth:** required. Query: `?page=&limit=&status=`.
+
+Returns vendor's payout history.
+
+```json
+[
+  {
+    "_id": "po_001",
+    "vendorId": "vendor_001",
+    "amount": 250000,
+    "status": "success",
+    "reference": "TRF_eko_001",
+    "initiatedAt": "...",
+    "completedAt": "..."
+  }
+]
+```
+
+`status` ∈ `pending | processing | success | failed | reversed`.
+
+## POST `/vendor/payouts`
+
+**Auth:** required.
+
+Initiates a transfer. Validates against `pendingPayouts` available, decrements it atomically, calls Paystack `POST /transfer`, persists with `status: 'processing'`. Webhook later updates to `success | failed | reversed`.
+
+Request:
+```json
+{ "amount": 250000 }
+```
+
+Errors:
+- 400 if amount ≤ 0 or > available balance.
+- 412 if no payout account is saved.
+- 503 if Paystack returns an error — the transfer must not be persisted as `processing` if Paystack rejected it synchronously.
+
+## POST `/vendor/payouts/webhook/paystack`
+
+**Auth:** Paystack signature header (`x-paystack-signature`) verified against `PAYSTACK_SECRET_KEY`.
+
+Event types handled:
+- `transfer.success` → set payout `status='success'`, set `completedAt`, write a `Transaction` row of type `payout`.
+- `transfer.failed` → set `status='failed'`, set `failureReason`, **credit the vendor's pending balance back**.
+- `transfer.reversed` → similar; investigate before crediting.
+
+Idempotency: dedupe by `event.data.reference` since Paystack may retry.
+
+## Backend implementation notes
+
+- Hold a **ledger** table (`vendor_balance`) with a single source of truth, mutated only by:
+  - Order completion → `+order.subtotal × (1 - platform_fee_rate)` to `pending_payout`.
+  - Payout request → `-amount` from `pending_payout`, `+amount` to `in_flight_payout`.
+  - Webhook success → `-amount` from `in_flight_payout`, `+amount` to `paid_out`.
+  - Webhook failure → `-amount` from `in_flight_payout`, `+amount` back to `pending_payout`.
+- Use a Postgres advisory lock or row-level lock on `vendor_balance` per vendor during `POST /vendor/payouts`.
+- `EarningsSummary.pendingPayouts` is `vendor_balance.pending_payout` directly.
 
 ---
 

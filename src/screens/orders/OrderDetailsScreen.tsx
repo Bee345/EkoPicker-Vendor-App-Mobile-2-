@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet, ActivityIndicator,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -36,34 +42,31 @@ export function OrderDetailsScreen() {
   }
 
   const currentIdx = ORDER_STATUS_FLOW.indexOf(order.status as any);
-  const nextStatus = currentIdx >= 0 && currentIdx < ORDER_STATUS_FLOW.length - 1
-    ? ORDER_STATUS_FLOW[currentIdx + 1]
-    : null;
+  const nextStatus =
+    currentIdx >= 0 && currentIdx < ORDER_STATUS_FLOW.length - 1
+      ? ORDER_STATUS_FLOW[currentIdx + 1]
+      : null;
 
   const handleAdvanceStatus = () => {
     if (!nextStatus) return;
-    Alert.alert(
-      'Update Order Status',
-      `Move order to "${ORDER_STATUS_LABELS[nextStatus]}"?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Confirm',
-          onPress: async () => {
-            setUpdating(true);
-            try {
-              await updateStatus.mutateAsync({ id: order._id, status: nextStatus });
-              // Emit socket event so user app and admin update immediately
-              emitOrderStatusUpdate(order._id, nextStatus);
-            } catch (e: any) {
-              Alert.alert('Error', e.message);
-            } finally {
-              setUpdating(false);
-            }
-          },
+    Alert.alert('Update Order Status', `Move order to "${ORDER_STATUS_LABELS[nextStatus]}"?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Confirm',
+        onPress: async () => {
+          setUpdating(true);
+          try {
+            await updateStatus.mutateAsync({ id: order._id, status: nextStatus });
+            // Emit socket event so user app and admin update immediately
+            emitOrderStatusUpdate(order._id, nextStatus);
+          } catch (e: any) {
+            Alert.alert('Error', e.message);
+          } finally {
+            setUpdating(false);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleCancel = () => {
@@ -95,10 +98,21 @@ export function OrderDetailsScreen() {
             return (
               <React.Fragment key={s}>
                 <View style={styles.pipelineStep}>
-                  <View style={[styles.stepDot, isDone && styles.stepDotDone, isActive && styles.stepDotActive]}>
+                  <View
+                    style={[
+                      styles.stepDot,
+                      isDone && styles.stepDotDone,
+                      isActive && styles.stepDotActive,
+                    ]}
+                  >
                     {isDone && !isActive && <Ionicons name="checkmark" size={10} color="#fff" />}
                   </View>
-                  <Text style={[styles.stepLabel, isActive && { color: COLORS.primary, fontWeight: '800' }]}>
+                  <Text
+                    style={[
+                      styles.stepLabel,
+                      isActive && { color: COLORS.primary, fontWeight: '800' },
+                    ]}
+                  >
                     {ORDER_STATUS_LABELS[s].replace(' for ', '\nfor ')}
                   </Text>
                 </View>
@@ -120,7 +134,16 @@ export function OrderDetailsScreen() {
               <Text style={styles.customerPhone}>{order.user.phone}</Text>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Chat', { screen: 'ChatConversation', params: { userId: order.user._id, userName: order.user.name, userAvatar: order.user.avatar } })}
+              onPress={() =>
+                navigation.navigate('Chat', {
+                  screen: 'ChatConversation',
+                  params: {
+                    userId: order.user._id,
+                    userName: order.user.name,
+                    userAvatar: order.user.avatar,
+                  },
+                })
+              }
               style={styles.chatBtn}
             >
               <Ionicons name="chatbubble-outline" size={18} color={COLORS.primary} />
@@ -133,7 +156,10 @@ export function OrderDetailsScreen() {
           <Text style={styles.cardTitle}>Delivery Address</Text>
           <View style={styles.addressRow}>
             <Ionicons name="location-outline" size={16} color="#94A3B8" />
-            <Text style={styles.addressText}>{order.deliveryAddress.fullAddress}{order.deliveryAddress.landmark ? ` (${order.deliveryAddress.landmark})` : ''}</Text>
+            <Text style={styles.addressText}>
+              {order.deliveryAddress.fullAddress}
+              {order.deliveryAddress.landmark ? ` (${order.deliveryAddress.landmark})` : ''}
+            </Text>
           </View>
         </View>
 
@@ -153,8 +179,14 @@ export function OrderDetailsScreen() {
 
           {/* Subtotals */}
           <View style={styles.divider} />
-          <View style={styles.totalRow}><Text style={styles.totalLabel}>Subtotal</Text><Text style={styles.totalVal}>{formatCurrency(order.subtotal)}</Text></View>
-          <View style={styles.totalRow}><Text style={styles.totalLabel}>Delivery Fee</Text><Text style={styles.totalVal}>{formatCurrency(order.deliveryFee)}</Text></View>
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Subtotal</Text>
+            <Text style={styles.totalVal}>{formatCurrency(order.subtotal)}</Text>
+          </View>
+          <View style={styles.totalRow}>
+            <Text style={styles.totalLabel}>Delivery Fee</Text>
+            <Text style={styles.totalVal}>{formatCurrency(order.deliveryFee)}</Text>
+          </View>
           <View style={[styles.totalRow, styles.grandTotal]}>
             <Text style={styles.grandLabel}>Total</Text>
             <Text style={styles.grandVal}>{formatCurrency(order.total)}</Text>
@@ -170,7 +202,17 @@ export function OrderDetailsScreen() {
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoKey}>Status</Text>
-            <Badge label={order.paymentStatus} variant={order.paymentStatus === 'paid' ? 'success' : order.paymentStatus === 'failed' ? 'danger' : 'warning'} size="sm" />
+            <Badge
+              label={order.paymentStatus}
+              variant={
+                order.paymentStatus === 'paid'
+                  ? 'success'
+                  : order.paymentStatus === 'failed'
+                    ? 'danger'
+                    : 'warning'
+              }
+              size="sm"
+            />
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoKey}>Placed</Text>
@@ -184,7 +226,8 @@ export function OrderDetailsScreen() {
             {nextStatus && (
               <Button
                 title={`Mark as ${ORDER_STATUS_LABELS[nextStatus]}`}
-                fullWidth size="lg"
+                fullWidth
+                size="lg"
                 loading={updating}
                 onPress={handleAdvanceStatus}
               />
@@ -200,9 +243,24 @@ export function OrderDetailsScreen() {
           </View>
         )}
         {isFinal && (
-          <View style={[styles.finalBadge, { backgroundColor: order.status === 'delivered' ? '#D1FAE5' : '#FFE4E6' }]}>
-            <Ionicons name={order.status === 'delivered' ? 'checkmark-circle' : 'close-circle'} size={20} color={order.status === 'delivered' ? '#10B981' : '#F43F5E'} />
-            <Text style={{ color: order.status === 'delivered' ? '#065F46' : '#9F1239', fontWeight: '800', fontSize: 14 }}>
+          <View
+            style={[
+              styles.finalBadge,
+              { backgroundColor: order.status === 'delivered' ? '#D1FAE5' : '#FFE4E6' },
+            ]}
+          >
+            <Ionicons
+              name={order.status === 'delivered' ? 'checkmark-circle' : 'close-circle'}
+              size={20}
+              color={order.status === 'delivered' ? '#10B981' : '#F43F5E'}
+            />
+            <Text
+              style={{
+                color: order.status === 'delivered' ? '#065F46' : '#9F1239',
+                fontWeight: '800',
+                fontSize: 14,
+              }}
+            >
               This order has been {order.status}.
             </Text>
           </View>
@@ -214,20 +272,64 @@ export function OrderDetailsScreen() {
 
 const styles = StyleSheet.create({
   scroll: { padding: 16, paddingBottom: 40 },
-  pipeline: { flexDirection: 'row', alignItems: 'flex-start', backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
+  pipeline: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
   pipelineStep: { alignItems: 'center', flex: 1 },
-  stepDot: { width: 20, height: 20, borderRadius: 10, backgroundColor: '#E2E8F0', alignItems: 'center', justifyContent: 'center', marginBottom: 4 },
+  stepDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
   stepDotDone: { backgroundColor: '#10B981' },
   stepDotActive: { backgroundColor: COLORS.accent, width: 24, height: 24, borderRadius: 12 },
   stepLabel: { fontSize: 9, fontWeight: '600', color: '#94A3B8', textAlign: 'center' },
   pipelineLine: { flex: 0.5, height: 2, backgroundColor: '#E2E8F0', marginTop: 10 },
   pipelineLineDone: { backgroundColor: '#10B981' },
-  card: { backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
-  cardTitle: { fontSize: 13, fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 12,
+  },
   customerRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   customerName: { fontSize: 15, fontWeight: '800', color: COLORS.primary },
   customerPhone: { fontSize: 12, color: '#94A3B8', fontWeight: '500' },
-  chatBtn: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#FEF9C3', alignItems: 'center', justifyContent: 'center' },
+  chatBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#FEF9C3',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   addressRow: { flexDirection: 'row', gap: 8, alignItems: 'flex-start' },
   addressText: { flex: 1, fontSize: 13, color: '#475569', lineHeight: 20 },
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8 },
@@ -243,7 +345,14 @@ const styles = StyleSheet.create({
   grandTotal: { borderTopWidth: 1, borderTopColor: '#F1F5F9', marginTop: 4, paddingTop: 10 },
   grandLabel: { fontSize: 16, fontWeight: '900', color: COLORS.primary },
   grandVal: { fontSize: 16, fontWeight: '900', color: COLORS.primary },
-  infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
   infoKey: { fontSize: 13, color: '#94A3B8', fontWeight: '600' },
   infoVal: { fontSize: 13, color: COLORS.primary, fontWeight: '700' },
   actionsWrap: { marginTop: 8 },

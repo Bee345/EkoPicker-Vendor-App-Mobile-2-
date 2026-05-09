@@ -14,10 +14,10 @@ interface BadgeProps {
 const BADGE_STYLES: Record<BadgeVariant, { bg: string; text: string }> = {
   success: { bg: '#D1FAE5', text: '#059669' },
   warning: { bg: '#FEF3C7', text: '#D97706' },
-  danger:  { bg: '#FFE4E6', text: '#E11D48' },
-  info:    { bg: '#DBEAFE', text: '#2563EB' },
+  danger: { bg: '#FFE4E6', text: '#E11D48' },
+  info: { bg: '#DBEAFE', text: '#2563EB' },
   neutral: { bg: '#F1F5F9', text: '#64748B' },
-  accent:  { bg: '#FEF9C3', text: '#92400E' },
+  accent: { bg: '#FEF9C3', text: '#92400E' },
 };
 
 export function Badge({ label, variant = 'neutral', size = 'md', style }: BadgeProps) {
@@ -45,13 +45,21 @@ export function Badge({ label, variant = 'neutral', size = 'md', style }: BadgeP
 /** Map OrderStatus → BadgeVariant */
 export function orderStatusVariant(status: string): BadgeVariant {
   switch (status) {
-    case 'pending':          return 'warning';
-    case 'confirmed':        return 'info';
-    case 'preparing':        return 'accent';
-    case 'ready_for_pickup': return 'success';
-    case 'picked_up':        return 'success';
-    case 'delivered':        return 'success';
-    case 'cancelled':        return 'danger';
-    default:                 return 'neutral';
+    case 'pending':
+      return 'warning';
+    case 'confirmed':
+      return 'info';
+    case 'preparing':
+      return 'accent';
+    case 'ready_for_pickup':
+      return 'success';
+    case 'picked_up':
+      return 'success';
+    case 'delivered':
+      return 'success';
+    case 'cancelled':
+      return 'danger';
+    default:
+      return 'neutral';
   }
 }

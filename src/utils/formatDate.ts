@@ -25,7 +25,7 @@ export const formatRelativeTime = (isoString: string): string => {
  * e.g. "Apr 15, 2026 · 10:30 am"
  */
 export const formatTransactionDate = (isoString: string): string => {
-  return format(new Date(isoString), "MMM d, yyyy · h:mm aa");
+  return format(new Date(isoString), 'MMM d, yyyy · h:mm aa');
 };
 
 /**

@@ -17,7 +17,9 @@ export const apiClient: AxiosInstance = axios.create({
 // Hook the auth store can register to be notified of forced logouts
 // (avoids a circular import between api.ts and the store).
 let onAuthExpired: (() => void) | null = null;
-export const setAuthExpiredHandler = (fn: () => void) => { onAuthExpired = fn; };
+export const setAuthExpiredHandler = (fn: () => void) => {
+  onAuthExpired = fn;
+};
 
 // ─── Concurrent refresh queue ───────────────────────────────────────────────
 // Multiple parallel requests hitting 401 should share a single refresh promise
@@ -51,7 +53,9 @@ async function refreshAccessToken(): Promise<string | null> {
     } finally {
       // Clear *after* the chained .then continuations have read the value.
       // Microtask ordering means the queued requests resolve first.
-      setTimeout(() => { refreshInFlight = null; }, 0);
+      setTimeout(() => {
+        refreshInFlight = null;
+      }, 0);
     }
   })();
 

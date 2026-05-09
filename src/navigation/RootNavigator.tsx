@@ -15,7 +15,14 @@ export function RootNavigator() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: COLORS.primary, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: COLORS.primary,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <ActivityIndicator color={COLORS.accent} size="large" />
       </View>
     );
@@ -25,8 +32,6 @@ export function RootNavigator() {
   const showApp = isAuthenticated && vendor?.status === 'approved';
 
   return (
-    <NavigationContainer>
-      {showApp ? <AppNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
+    <NavigationContainer>{showApp ? <AppNavigator /> : <AuthNavigator />}</NavigationContainer>
   );
 }

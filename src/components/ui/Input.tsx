@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TextInputProps,
-  TouchableOpacity,
-  ViewStyle,
-} from 'react-native';
+import { View, Text, TextInput, TextInputProps, TouchableOpacity, ViewStyle } from 'react-native';
 import { COLORS } from '../../utils/constants';
 
 interface InputProps extends TextInputProps {
@@ -34,7 +27,15 @@ export function Input({
   return (
     <View style={[{ marginBottom: 4 }, containerStyle]}>
       {label && (
-        <Text style={{ color: COLORS.muted, fontSize: 12, fontWeight: '600', marginBottom: 6, marginLeft: 4 }}>
+        <Text
+          style={{
+            color: COLORS.muted,
+            fontSize: 12,
+            fontWeight: '600',
+            marginBottom: 6,
+            marginLeft: 4,
+          }}
+        >
           {label}
         </Text>
       )}

@@ -10,15 +10,37 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export function EmptyState({ icon = '📭', title, subtitle, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({
+  icon = '📭',
+  title,
+  subtitle,
+  actionLabel,
+  onAction,
+}: EmptyStateProps) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 32 }}>
       <Text style={{ fontSize: 56, marginBottom: 16 }}>{icon}</Text>
-      <Text style={{ color: COLORS.primary, fontSize: 18, fontWeight: '800', marginBottom: 8, textAlign: 'center' }}>
+      <Text
+        style={{
+          color: COLORS.primary,
+          fontSize: 18,
+          fontWeight: '800',
+          marginBottom: 8,
+          textAlign: 'center',
+        }}
+      >
         {title}
       </Text>
       {subtitle && (
-        <Text style={{ color: COLORS.muted, fontSize: 13, textAlign: 'center', lineHeight: 20, marginBottom: 24 }}>
+        <Text
+          style={{
+            color: COLORS.muted,
+            fontSize: 13,
+            textAlign: 'center',
+            lineHeight: 20,
+            marginBottom: 24,
+          }}
+        >
           {subtitle}
         </Text>
       )}
@@ -26,9 +48,16 @@ export function EmptyState({ icon = '📭', title, subtitle, actionLabel, onActi
         <TouchableOpacity
           onPress={onAction}
           activeOpacity={0.8}
-          style={{ backgroundColor: COLORS.accent, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}
+          style={{
+            backgroundColor: COLORS.accent,
+            paddingHorizontal: 24,
+            paddingVertical: 12,
+            borderRadius: 12,
+          }}
         >
-          <Text style={{ color: COLORS.primary, fontWeight: '800', fontSize: 14 }}>{actionLabel}</Text>
+          <Text style={{ color: COLORS.primary, fontWeight: '800', fontSize: 14 }}>
+            {actionLabel}
+          </Text>
         </TouchableOpacity>
       )}
     </View>

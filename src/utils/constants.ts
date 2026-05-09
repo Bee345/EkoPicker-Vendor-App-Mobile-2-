@@ -1,20 +1,20 @@
 // ─── App Colors ─────────────────────────────────────────────────────────────
 export const COLORS = {
-  primary: '#0F172A',    // indigo-950 equivalent
-  accent: '#FACC15',     // yellow-400
+  primary: '#0F172A', // indigo-950 equivalent
+  accent: '#FACC15', // yellow-400
   accentDark: '#CA8A04', // yellow-600
   white: '#FFFFFF',
   background: '#F8FAFC', // slate-50
   backgroundDark: '#0F172A',
   card: '#FFFFFF',
-  cardDark: '#1E293B',   // slate-800
-  muted: '#64748B',      // slate-500
+  cardDark: '#1E293B', // slate-800
+  muted: '#64748B', // slate-500
   mutedLight: '#CBD5E1', // slate-300
-  success: '#10B981',    // emerald-500
-  danger: '#F43F5E',     // rose-500
-  warning: '#F59E0B',    // amber-500
-  info: '#3B82F6',       // blue-500
-  border: '#F1F5F9',     // slate-100
+  success: '#10B981', // emerald-500
+  danger: '#F43F5E', // rose-500
+  warning: '#F59E0B', // amber-500
+  info: '#3B82F6', // blue-500
+  border: '#F1F5F9', // slate-100
   borderDark: '#334155', // slate-700
 };
 
@@ -59,6 +59,7 @@ export const SCREENS = {
   // More Stack
   MORE: 'MoreHome',
   EARNINGS: 'Earnings',
+  PAYOUTS: 'Payouts',
   PROFILE: 'Profile',
   EDIT_PROFILE: 'EditProfile',
   CHANGE_PASSWORD: 'ChangePassword',

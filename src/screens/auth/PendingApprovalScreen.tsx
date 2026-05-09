@@ -22,8 +22,8 @@ export function PendingApprovalScreen() {
       </View>
       <Text style={styles.title}>Application Submitted!</Text>
       <Text style={styles.subtitle}>
-        Your vendor account is under review. Our team will verify your business details within 24–48 hours.
-        You'll receive an email notification once approved.
+        Your vendor account is under review. Our team will verify your business details within 24–48
+        hours. You'll receive an email notification once approved.
       </Text>
 
       <View style={styles.steps}>
@@ -57,10 +57,44 @@ export function PendingApprovalScreen() {
 
 const styles = StyleSheet.create({
   container: { alignItems: 'center', justifyContent: 'center', padding: 32 },
-  iconWrap: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#FEF9C3', alignItems: 'center', justifyContent: 'center', marginBottom: 28, shadowColor: COLORS.accent, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.2, shadowRadius: 20, elevation: 8 },
-  title: { fontSize: 26, fontWeight: '900', color: COLORS.primary, textAlign: 'center', letterSpacing: -0.5, marginBottom: 12 },
-  subtitle: { fontSize: 14, color: '#64748B', lineHeight: 22, textAlign: 'center', marginBottom: 36, maxWidth: 320 },
+  iconWrap: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#FEF9C3',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 28,
+    shadowColor: COLORS.accent,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 8,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: COLORS.primary,
+    textAlign: 'center',
+    letterSpacing: -0.5,
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#64748B',
+    lineHeight: 22,
+    textAlign: 'center',
+    marginBottom: 36,
+    maxWidth: 320,
+  },
   steps: { width: '100%', gap: 16, marginBottom: 40 },
-  step: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: '#F8FAFC', borderRadius: 12, padding: 14 },
+  step: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    padding: 14,
+  },
   stepLabel: { fontSize: 14, fontWeight: '600' },
 });

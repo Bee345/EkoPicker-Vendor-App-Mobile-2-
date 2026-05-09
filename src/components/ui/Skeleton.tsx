@@ -41,7 +41,9 @@ export function Skeleton({ width = '100%', height = 16, borderRadius = 8, style 
 /** Pre-built skeleton card for lists */
 export function SkeletonCard() {
   return (
-    <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 12, gap: 10 }}>
+    <View
+      style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 12, gap: 10 }}
+    >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <Skeleton width={48} height={48} borderRadius={12} />
         <View style={{ flex: 1, gap: 8 }}>

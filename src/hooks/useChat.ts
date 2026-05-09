@@ -44,9 +44,7 @@ export function useChat(chatId: string) {
         qc.invalidateQueries({ queryKey: CHATS_KEY });
         return;
       }
-      qc.setQueryData<Message[]>(MESSAGES_KEY(chatId), (prev) =>
-        prev ? [...prev, msg] : [msg],
-      );
+      qc.setQueryData<Message[]>(MESSAGES_KEY(chatId), (prev) => (prev ? [...prev, msg] : [msg]));
     };
 
     const handleTyping = (data: { chatId: string; isTyping: boolean; senderType: string }) => {
@@ -73,9 +71,7 @@ export function useChat(chatId: string) {
   const sendMutation = useMutation({
     mutationFn: (text: string) => chatService.sendMessage({ chatId, text }),
     onSuccess: (msg) => {
-      qc.setQueryData<Message[]>(MESSAGES_KEY(chatId), (prev) =>
-        prev ? [...prev, msg] : [msg],
-      );
+      qc.setQueryData<Message[]>(MESSAGES_KEY(chatId), (prev) => (prev ? [...prev, msg] : [msg]));
       qc.invalidateQueries({ queryKey: CHATS_KEY });
     },
   });

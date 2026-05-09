@@ -31,8 +31,7 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
   setConnected: (val) => set({ isConnected: val }),
 
-  addPendingOrder: (order) =>
-    set((s) => ({ pendingNewOrders: [order, ...s.pendingNewOrders] })),
+  addPendingOrder: (order) => set((s) => ({ pendingNewOrders: [order, ...s.pendingNewOrders] })),
 
   clearPendingOrders: () => set({ pendingNewOrders: [] }),
 
@@ -56,6 +55,5 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
   setTotalUnread: (count) => set({ totalUnreadMessages: count }),
 
-  incrementUnread: () =>
-    set((s) => ({ totalUnreadMessages: s.totalUnreadMessages + 1 })),
+  incrementUnread: () => set((s) => ({ totalUnreadMessages: s.totalUnreadMessages + 1 })),
 }));

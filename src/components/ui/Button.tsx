@@ -73,7 +73,10 @@ export function Button({
       {...rest}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? COLORS.primary : COLORS.accent} size="small" />
+        <ActivityIndicator
+          color={variant === 'primary' ? COLORS.primary : COLORS.accent}
+          size="small"
+        />
       ) : (
         <>
           {leftIcon}

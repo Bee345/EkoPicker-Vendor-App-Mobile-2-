@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, Image, Alert, StyleSheet, ActivityIndicator,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+  StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +29,13 @@ export function ProductDetailsScreen() {
   const [imgIndex, setImgIndex] = useState(0);
 
   if (isLoading) {
-    return <SafeScreen><View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator color={COLORS.accent} size="large" /></View></SafeScreen>;
+    return (
+      <SafeScreen>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator color={COLORS.accent} size="large" />
+        </View>
+      </SafeScreen>
+    );
   }
   if (!product) {
     return (
@@ -36,7 +49,12 @@ export function ProductDetailsScreen() {
           <Text style={{ color: COLORS.muted, fontSize: 13, marginTop: 4, textAlign: 'center' }}>
             It may have been deleted. Please go back and refresh.
           </Text>
-          <Button title="Go back" variant="outline" style={{ marginTop: 20 }} onPress={() => navigation.goBack()} />
+          <Button
+            title="Go back"
+            variant="outline"
+            style={{ marginTop: 20 }}
+            onPress={() => navigation.goBack()}
+          />
         </View>
       </SafeScreen>
     );
@@ -46,7 +64,8 @@ export function ProductDetailsScreen() {
     Alert.alert('Delete Product', `Are you sure you want to delete "${product.name}"?`, [
       { text: 'Cancel', style: 'cancel' },
       {
-        text: 'Delete', style: 'destructive',
+        text: 'Delete',
+        style: 'destructive',
         onPress: async () => {
           await deleteMutation.mutateAsync(product._id);
           navigation.goBack();
@@ -55,19 +74,25 @@ export function ProductDetailsScreen() {
     ]);
   };
 
-  const images = product.images.length > 0 ? product.images : ['https://picsum.photos/seed/product/400/400'];
+  const images =
+    product.images.length > 0 ? product.images : ['https://picsum.photos/seed/product/400/400'];
 
   return (
     <SafeScreen edges={['top']}>
       <ScreenHeader
         title="Product Details"
         rightElement={
-          <TouchableOpacity onPress={() => navigation.navigate(SCREENS.EDIT_PRODUCT, { productId })}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(SCREENS.EDIT_PRODUCT, { productId })}
+          >
             <Ionicons name="pencil-outline" size={22} color={COLORS.primary} />
           </TouchableOpacity>
         }
       />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 32 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 32 }}
+      >
         {/* Images */}
         <View>
           <Image source={{ uri: images[imgIndex] }} style={styles.mainImage} />
@@ -75,7 +100,10 @@ export function ProductDetailsScreen() {
             <View style={styles.thumbRow}>
               {images.map((uri, i) => (
                 <TouchableOpacity key={i} onPress={() => setImgIndex(i)}>
-                  <Image source={{ uri }} style={[styles.thumb, i === imgIndex && styles.thumbActive]} />
+                  <Image
+                    source={{ uri }}
+                    style={[styles.thumb, i === imgIndex && styles.thumbActive]}
+                  />
                 </TouchableOpacity>
               ))}
             </View>
@@ -88,7 +116,13 @@ export function ProductDetailsScreen() {
             <Text style={styles.name}>{product.name}</Text>
             <Badge
               label={product.status.replace('_', ' ')}
-              variant={product.status === 'active' ? 'success' : product.status === 'out_of_stock' ? 'warning' : 'neutral'}
+              variant={
+                product.status === 'active'
+                  ? 'success'
+                  : product.status === 'out_of_stock'
+                    ? 'warning'
+                    : 'neutral'
+              }
             />
           </View>
           {product.brand && <Text style={styles.brand}>{product.brand}</Text>}
@@ -114,7 +148,9 @@ export function ProductDetailsScreen() {
             )}
             {product.sku && (
               <View style={styles.statBox}>
-                <Text style={styles.statValue} numberOfLines={1}>{product.sku}</Text>
+                <Text style={styles.statValue} numberOfLines={1}>
+                  {product.sku}
+                </Text>
                 <Text style={styles.statLabel}>SKU</Text>
               </View>
             )}
@@ -138,11 +174,26 @@ export function ProductDetailsScreen() {
           {product.dosage && (
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Drug Details</Text>
-              <View style={styles.detailRow}><Text style={styles.detailKey}>Generic Name</Text><Text style={styles.detailVal}>{product.genericName}</Text></View>
-              <View style={styles.detailRow}><Text style={styles.detailKey}>Dosage</Text><Text style={styles.detailVal}>{product.dosage}</Text></View>
-              <View style={styles.detailRow}><Text style={styles.detailKey}>Manufacturer</Text><Text style={styles.detailVal}>{product.manufacturer}</Text></View>
-              <View style={styles.detailRow}><Text style={styles.detailKey}>Expiry Date</Text><Text style={styles.detailVal}>{product.expiryDate}</Text></View>
-              <View style={styles.detailRow}><Text style={styles.detailKey}>Batch #</Text><Text style={styles.detailVal}>{product.batchNumber}</Text></View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailKey}>Generic Name</Text>
+                <Text style={styles.detailVal}>{product.genericName}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailKey}>Dosage</Text>
+                <Text style={styles.detailVal}>{product.dosage}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailKey}>Manufacturer</Text>
+                <Text style={styles.detailVal}>{product.manufacturer}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailKey}>Expiry Date</Text>
+                <Text style={styles.detailVal}>{product.expiryDate}</Text>
+              </View>
+              <View style={styles.detailRow}>
+                <Text style={styles.detailKey}>Batch #</Text>
+                <Text style={styles.detailVal}>{product.batchNumber}</Text>
+              </View>
             </View>
           )}
 
@@ -176,22 +227,59 @@ const styles = StyleSheet.create({
   thumb: { width: 60, height: 60, borderRadius: 10, borderWidth: 2, borderColor: 'transparent' },
   thumbActive: { borderColor: COLORS.accent },
   body: { padding: 20 },
-  nameRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 4 },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 4,
+  },
   name: { flex: 1, fontSize: 22, fontWeight: '900', color: COLORS.primary, letterSpacing: -0.5 },
   brand: { fontSize: 14, color: '#64748B', fontWeight: '600', marginBottom: 2 },
-  category: { fontSize: 11, color: '#CBD5E1', fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 },
+  category: {
+    fontSize: 11,
+    color: '#CBD5E1',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 12,
+  },
   priceRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 },
   price: { fontSize: 28, fontWeight: '900', color: COLORS.primary, letterSpacing: -0.5 },
-  discountBadge: { backgroundColor: '#FEF9C3', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
+  discountBadge: {
+    backgroundColor: '#FEF9C3',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
   discountText: { color: '#92400E', fontSize: 11, fontWeight: '800' },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: 20 },
-  statBox: { flex: 1, backgroundColor: '#F8FAFC', borderRadius: 14, padding: 12, alignItems: 'center' },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    padding: 12,
+    alignItems: 'center',
+  },
   statValue: { fontSize: 16, fontWeight: '900', color: COLORS.primary, marginBottom: 2 },
   statLabel: { fontSize: 10, color: '#94A3B8', fontWeight: '600', textTransform: 'uppercase' },
   section: { marginBottom: 20 },
-  sectionTitle: { fontSize: 13, fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 10,
+  },
   description: { fontSize: 14, color: '#475569', lineHeight: 22 },
-  detailRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
   detailKey: { fontSize: 13, color: '#94A3B8', fontWeight: '600' },
   detailVal: { fontSize: 13, color: COLORS.primary, fontWeight: '700' },
   actions: { marginTop: 8 },

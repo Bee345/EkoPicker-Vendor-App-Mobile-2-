@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet, Switch,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  StyleSheet,
+  Switch,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeScreen } from '../../components/layout/SafeScreen';
@@ -22,9 +29,7 @@ export function StoreSettingsScreen() {
   const [saving, setSaving] = useState(false);
 
   const toggleDay = (day: string) => {
-    setOpenDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
-    );
+    setOpenDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
   };
 
   const handleSave = async () => {
@@ -37,8 +42,10 @@ export function StoreSettingsScreen() {
   return (
     <SafeScreen edges={['top']}>
       <ScreenHeader title="Store Settings" />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
-
+      <ScrollView
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Store Status */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
@@ -48,7 +55,9 @@ export function StoreSettingsScreen() {
           <View style={styles.row}>
             <View>
               <Text style={styles.rowLabel}>{isOpen ? '🟢 Open for orders' : '🔴 Closed'}</Text>
-              <Text style={styles.rowSub}>Customers {isOpen ? 'can' : 'cannot'} place orders now</Text>
+              <Text style={styles.rowSub}>
+                Customers {isOpen ? 'can' : 'cannot'} place orders now
+              </Text>
             </View>
             <Switch
               value={isOpen}
@@ -73,7 +82,9 @@ export function StoreSettingsScreen() {
                 onPress={() => toggleDay(d)}
                 style={[styles.dayChip, openDays.includes(d) && styles.dayChipActive]}
               >
-                <Text style={[styles.dayText, openDays.includes(d) && styles.dayTextActive]}>{d}</Text>
+                <Text style={[styles.dayText, openDays.includes(d) && styles.dayTextActive]}>
+                  {d}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -136,7 +147,10 @@ export function StoreSettingsScreen() {
             { label: 'Chat Messages', sub: 'Notify when a customer sends a message', on: true },
             { label: 'Order Status Updates', sub: 'When EkoPicker updates your order', on: false },
           ].map((item, i, arr) => (
-            <View key={item.label} style={[styles.notifRow, i < arr.length - 1 && styles.notifBorder]}>
+            <View
+              key={item.label}
+              style={[styles.notifRow, i < arr.length - 1 && styles.notifBorder]}
+            >
               <View style={{ flex: 1 }}>
                 <Text style={styles.notifLabel}>{item.label}</Text>
                 <Text style={styles.notifSub}>{item.sub}</Text>
@@ -150,26 +164,69 @@ export function StoreSettingsScreen() {
           ))}
         </View>
 
-        <Button title="Save Settings" fullWidth size="lg" loading={saving} onPress={handleSave} style={{ marginTop: 8 }} />
+        <Button
+          title="Save Settings"
+          fullWidth
+          size="lg"
+          loading={saving}
+          onPress={handleSave}
+          style={{ marginTop: 8 }}
+        />
       </ScrollView>
     </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 },
   cardTitle: { fontSize: 15, fontWeight: '800', color: COLORS.primary },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   rowLabel: { fontSize: 14, fontWeight: '700', color: COLORS.primary, marginBottom: 2 },
   rowSub: { fontSize: 12, color: '#94A3B8', fontWeight: '500' },
-  subLabel: { fontSize: 11, fontWeight: '700', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 },
+  subLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#94A3B8',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
   daysRow: { flexDirection: 'row', gap: 6, flexWrap: 'wrap' },
-  dayChip: { width: 44, height: 36, borderRadius: 10, backgroundColor: '#F8FAFC', borderWidth: 1, borderColor: '#E2E8F0', alignItems: 'center', justifyContent: 'center' },
+  dayChip: {
+    width: 44,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   dayChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   dayText: { fontSize: 11, fontWeight: '800', color: '#64748B' },
   dayTextActive: { color: '#fff' },
-  timeBox: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#F8FAFC', borderRadius: 12, paddingHorizontal: 12, height: 48, borderWidth: 1, borderColor: '#E2E8F0' },
+  timeBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
   timeInput: { flex: 1, color: COLORS.primary, fontSize: 14, fontWeight: '600' },
   notifRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12 },
   notifBorder: { borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },

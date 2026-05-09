@@ -21,9 +21,5 @@ export function SafeScreen({ children, style, edges = ['top', 'bottom'] }: SafeS
     paddingRight: edges.includes('right') ? insets.right : 0,
   };
 
-  return (
-    <View style={[{ flex: 1, backgroundColor: '#fff' }, padding, style]}>
-      {children}
-    </View>
-  );
+  return <View style={[{ flex: 1, backgroundColor: '#fff' }, padding, style]}>{children}</View>;
 }

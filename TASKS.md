@@ -35,7 +35,7 @@ When in doubt, start with Sonnet 4.6 — it covers most engineering work.
 | P0-06 | EAS project ID in `app.json` is the placeholder `"ekopicker-vendor"` — run `eas init` and replace with the real UUID | Haiku 4.5 (5-min chore) | Open |
 | P0-07 | Remove demo credentials from `LoginScreen` defaultValues entirely once mock-mode is removed for production | Haiku 4.5 | Open (currently gated on `EXPO_PUBLIC_USE_MOCK`, so already safe for prod builds) |
 | P0-08 | Set up Sentry DSN, init in `App.tsx`, forward errors from `ErrorBoundary` | Sonnet 4.6 | Open |
-| P0-09 | **Paystack payout integration (decided 2026-05-08).** Backend: `POST /vendor/earnings/payout` to initiate, Paystack transfer API integration, webhook to update transaction status, `pendingPayouts` derived from a real ledger. App: "Request payout" CTA on EarningsScreen, payout history view. | Sonnet 4.6 (impl) + Opus 4.7 (ledger schema design) | Open |
+| P0-09 | **Paystack payout integration (decided 2026-05-08).** Backend: `POST /vendor/payouts` to initiate, Paystack transfer API integration, webhook to update status, ledger-based `pending_payout` balance. Mobile-side (DONE 2026-05-08): `PayoutsScreen` with bank picker, account form, request flow, history list; types/services/hooks; CTA on EarningsScreen; full mock implementation; backend contract documented in `API_DOCS.md`. **Backend remaining.** | Sonnet 4.6 (impl) + Opus 4.7 (ledger schema design) | In Progress (mobile ✅, backend pending) |
 
 ## P1 — High priority (should fix soon)
 
@@ -79,6 +79,15 @@ When in doubt, start with Sonnet 4.6 — it covers most engineering work.
 | P3-06 | Document keyboard shortcuts in the Expo dev client | Haiku 4.5 | Open |
 
 ---
+
+## Mobile-side payouts work (P0-09) — landed 2026-05-09
+
+- Types: `PayoutAccount`, `Payout`, `PayoutStatus`, `Bank`, `SavePayoutAccountDto`, `RequestPayoutDto`. `EarningsSummary` extended with `growthVsLastWeek` + `nextPayoutDate`.
+- Service: `earningsService.{getBanks, getPayoutAccount, savePayoutAccount, getPayouts, requestPayout}` with mock + real branches. Mock simulates a 4 s Paystack webhook delay so processing → success transitions are visible.
+- Hooks: `useBanks`, `usePayoutAccount`, `useSavePayoutAccount`, `usePayouts` (polls every 30 s), `useRequestPayout` (invalidates summary + transactions on success).
+- Screen: `src/screens/earnings/PayoutsScreen.tsx` — balance card, account form (with bank picker modal + 10-digit account validation), request-payout flow (amount + 25/50/Max quick pills + confirmation alert), history list with status badges.
+- Navigation: `SCREENS.PAYOUTS` added; route registered in `MoreStack`. EarningsScreen has a `Pending Payout` CTA banner that navigates here.
+- Backend contract: `API_DOCS.md` § "Payouts (Paystack)" defines all six endpoints (banks list, account get/save, history, request, webhook) plus the ledger schema recommendation.
 
 ## Audit fixes already applied
 

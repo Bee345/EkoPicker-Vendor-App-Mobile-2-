@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Image, Alert, StyleSheet,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeScreen } from '../../components/layout/SafeScreen';
@@ -32,13 +30,21 @@ export function ProfileScreen() {
           </TouchableOpacity>
         }
       />
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 40 }} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Avatar */}
         <View style={styles.avatarWrap}>
           {vendor?.avatar ? (
             <Image source={{ uri: vendor.avatar }} style={styles.avatar} />
           ) : (
-            <View style={[styles.avatar, { backgroundColor: COLORS.accent, alignItems: 'center', justifyContent: 'center' }]}>
+            <View
+              style={[
+                styles.avatar,
+                { backgroundColor: COLORS.accent, alignItems: 'center', justifyContent: 'center' },
+              ]}
+            >
               <Text style={{ color: COLORS.primary, fontWeight: '900', fontSize: 36 }}>
                 {vendor?.name?.[0]?.toUpperCase() ?? 'V'}
               </Text>
@@ -93,15 +99,70 @@ export function ProfileScreen() {
 const styles = StyleSheet.create({
   avatarWrap: { alignSelf: 'center', position: 'relative', marginBottom: 16 },
   avatar: { width: 100, height: 100, borderRadius: 32, borderWidth: 3, borderColor: COLORS.accent },
-  editAvatarBtn: { position: 'absolute', bottom: -4, right: -4, width: 32, height: 32, borderRadius: 16, backgroundColor: COLORS.accent, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#fff' },
-  name: { fontSize: 22, fontWeight: '900', color: COLORS.primary, textAlign: 'center', marginBottom: 4 },
-  business: { fontSize: 14, color: '#64748B', fontWeight: '600', textAlign: 'center', marginBottom: 28 },
-  card: { backgroundColor: '#fff', borderRadius: 20, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 3, marginBottom: 20 },
-  field: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14, paddingHorizontal: 16 },
+  editAvatarBtn: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  name: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: COLORS.primary,
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  business: {
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 28,
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 3,
+    marginBottom: 20,
+  },
+  field: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
   fieldBorder: { borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  fieldIcon: { width: 36, height: 36, borderRadius: 10, backgroundColor: '#F8FAFC', alignItems: 'center', justifyContent: 'center' },
+  fieldIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   fieldLabel: { fontSize: 11, color: '#94A3B8', fontWeight: '600', marginBottom: 2 },
   fieldValue: { fontSize: 14, fontWeight: '700', color: COLORS.primary },
-  actionBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, backgroundColor: COLORS.accent, borderRadius: 16, paddingVertical: 14 },
+  actionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: COLORS.accent,
+    borderRadius: 16,
+    paddingVertical: 14,
+  },
   actionText: { fontSize: 15, fontWeight: '800', color: COLORS.primary },
 });

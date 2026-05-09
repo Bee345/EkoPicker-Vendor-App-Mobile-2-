@@ -15,7 +15,10 @@ import { COLORS } from '../../utils/constants';
 const schema = z.object({
   name: z.string().min(2, 'Enter product name'),
   description: z.string().min(10, 'Min 10 characters'),
-  price: z.string().min(1, 'Enter price').refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Must be positive'),
+  price: z
+    .string()
+    .min(1, 'Enter price')
+    .refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Must be positive'),
   category: z.string().min(2, 'Enter category'),
   brand: z.string().optional(),
   sku: z.string().optional(),
@@ -30,7 +33,12 @@ export function EditProductScreen() {
   const { data: product, isLoading } = useProduct(productId);
   const updateMutation = useUpdateProduct(productId);
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
@@ -43,7 +51,8 @@ export function EditProductScreen() {
         category: product.category,
         brand: product.brand ?? '',
         sku: product.sku ?? '',
-        quantityInStock: product.quantityInStock !== undefined ? String(product.quantityInStock) : '',
+        quantityInStock:
+          product.quantityInStock !== undefined ? String(product.quantityInStock) : '',
       });
     }
   }, [product]);
@@ -68,38 +77,135 @@ export function EditProductScreen() {
   };
 
   if (isLoading) {
-    return <SafeScreen><View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator color={COLORS.accent} size="large" /></View></SafeScreen>;
+    return (
+      <SafeScreen>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator color={COLORS.accent} size="large" />
+        </View>
+      </SafeScreen>
+    );
   }
 
   return (
     <SafeScreen edges={['top']}>
       <ScreenHeader title="Edit Product" />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <View style={{ gap: 10 }}>
-          <Controller control={control} name="name" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Product Name *" placeholder="Product name" value={value} onChangeText={onChange} onBlur={onBlur} error={errors.name?.message} leftIcon={<Ionicons name="pricetag-outline" size={18} color="#94A3B8" />} />
-          )} />
-          <Controller control={control} name="description" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Description *" placeholder="Product description..." value={value} onChangeText={onChange} onBlur={onBlur} error={errors.description?.message} multiline style={{ height: 100, paddingTop: 14 }} />
-          )} />
-          <Controller control={control} name="price" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Price (₦) *" placeholder="0.00" keyboardType="numeric" value={value} onChangeText={onChange} onBlur={onBlur} error={errors.price?.message} leftIcon={<Ionicons name="cash-outline" size={18} color="#94A3B8" />} />
-          )} />
-          <Controller control={control} name="category" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Category *" placeholder="Category" value={value} onChangeText={onChange} onBlur={onBlur} error={errors.category?.message} />
-          )} />
-          <Controller control={control} name="brand" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Brand" placeholder="Brand name" value={value} onChangeText={onChange} onBlur={onBlur} />
-          )} />
-          <Controller control={control} name="sku" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="SKU / Code" placeholder="SKU-001" value={value} onChangeText={onChange} onBlur={onBlur} />
-          )} />
-          <Controller control={control} name="quantityInStock" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Quantity in Stock" placeholder="50" keyboardType="numeric" value={value} onChangeText={onChange} onBlur={onBlur} leftIcon={<Ionicons name="layers-outline" size={18} color="#94A3B8" />} />
-          )} />
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Product Name *"
+                placeholder="Product name"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.name?.message}
+                leftIcon={<Ionicons name="pricetag-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Description *"
+                placeholder="Product description..."
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.description?.message}
+                multiline
+                style={{ height: 100, paddingTop: 14 }}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="price"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Price (₦) *"
+                placeholder="0.00"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.price?.message}
+                leftIcon={<Ionicons name="cash-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="category"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Category *"
+                placeholder="Category"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.category?.message}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="brand"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Brand"
+                placeholder="Brand name"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="sku"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="SKU / Code"
+                placeholder="SKU-001"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="quantityInStock"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Quantity in Stock"
+                placeholder="50"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                leftIcon={<Ionicons name="layers-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
         </View>
         <View style={{ height: 24 }} />
-        <Button title="Save Changes" fullWidth size="lg" loading={updateMutation.isPending} onPress={handleSubmit(onSubmit)} />
+        <Button
+          title="Save Changes"
+          fullWidth
+          size="lg"
+          loading={updateMutation.isPending}
+          onPress={handleSubmit(onSubmit)}
+        />
       </ScrollView>
     </SafeScreen>
   );

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet, Image,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -19,7 +17,10 @@ import { COLORS } from '../../utils/constants';
 const schema = z.object({
   name: z.string().min(2, 'Enter product name'),
   description: z.string().min(10, 'Describe the product (min 10 chars)'),
-  price: z.string().min(1, 'Enter price').refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Price must be a positive number'),
+  price: z
+    .string()
+    .min(1, 'Enter price')
+    .refine((v) => !isNaN(Number(v)) && Number(v) > 0, 'Price must be a positive number'),
   category: z.string().min(2, 'Enter a category'),
   brand: z.string().optional(),
   sku: z.string().optional(),
@@ -44,7 +45,12 @@ export function AddProductScreen() {
 
   const cats = CATEGORIES[vendor?.businessType ?? 'retail'] ?? CATEGORIES.retail;
 
-  const { control, handleSubmit, formState: { errors }, setValue } = useForm<FormValues>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
 
@@ -89,7 +95,11 @@ export function AddProductScreen() {
   return (
     <SafeScreen edges={['top']}>
       <ScreenHeader title="Add Product" />
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Images */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Product Images</Text>
@@ -121,10 +131,15 @@ export function AddProductScreen() {
             {cats.map((cat) => (
               <TouchableOpacity
                 key={cat}
-                onPress={() => { setSelectedCategory(cat); setValue('category', cat); }}
+                onPress={() => {
+                  setSelectedCategory(cat);
+                  setValue('category', cat);
+                }}
                 style={[styles.catChip, selectedCategory === cat && styles.catChipActive]}
               >
-                <Text style={[styles.catChipText, selectedCategory === cat && styles.catChipTextActive]}>
+                <Text
+                  style={[styles.catChipText, selectedCategory === cat && styles.catChipTextActive]}
+                >
                   {cat}
                 </Text>
               </TouchableOpacity>
@@ -136,34 +151,107 @@ export function AddProductScreen() {
         {/* Form fields */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Product Details</Text>
-          <Controller control={control} name="name" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Product Name *" placeholder="e.g. Premium Headphones" value={value} onChangeText={onChange} onBlur={onBlur} error={errors.name?.message} leftIcon={<Ionicons name="pricetag-outline" size={18} color="#94A3B8" />} />
-          )} />
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Product Name *"
+                placeholder="e.g. Premium Headphones"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.name?.message}
+                leftIcon={<Ionicons name="pricetag-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
           <View style={{ height: 10 }} />
-          <Controller control={control} name="description" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Description *" placeholder="Describe your product..." value={value} onChangeText={onChange} onBlur={onBlur} error={errors.description?.message} multiline style={{ height: 100, paddingTop: 14 }} />
-          )} />
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Description *"
+                placeholder="Describe your product..."
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.description?.message}
+                multiline
+                style={{ height: 100, paddingTop: 14 }}
+              />
+            )}
+          />
           <View style={{ height: 10 }} />
-          <Controller control={control} name="price" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Price (₦) *" placeholder="0.00" keyboardType="numeric" value={value} onChangeText={onChange} onBlur={onBlur} error={errors.price?.message} leftIcon={<Ionicons name="cash-outline" size={18} color="#94A3B8" />} />
-          )} />
+          <Controller
+            control={control}
+            name="price"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Price (₦) *"
+                placeholder="0.00"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                error={errors.price?.message}
+                leftIcon={<Ionicons name="cash-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
           <View style={{ height: 10 }} />
-          <Controller control={control} name="brand" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Brand (optional)" placeholder="e.g. Sony" value={value} onChangeText={onChange} onBlur={onBlur} leftIcon={<Ionicons name="business-outline" size={18} color="#94A3B8" />} />
-          )} />
+          <Controller
+            control={control}
+            name="brand"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Brand (optional)"
+                placeholder="e.g. Sony"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                leftIcon={<Ionicons name="business-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
           <View style={{ height: 10 }} />
-          <Controller control={control} name="sku" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="SKU / Code (optional)" placeholder="e.g. SKU-001" value={value} onChangeText={onChange} onBlur={onBlur} leftIcon={<Ionicons name="barcode-outline" size={18} color="#94A3B8" />} />
-          )} />
+          <Controller
+            control={control}
+            name="sku"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="SKU / Code (optional)"
+                placeholder="e.g. SKU-001"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                leftIcon={<Ionicons name="barcode-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
           <View style={{ height: 10 }} />
-          <Controller control={control} name="quantityInStock" render={({ field: { onChange, onBlur, value } }) => (
-            <Input label="Quantity in Stock (optional)" placeholder="e.g. 50" keyboardType="numeric" value={value} onChangeText={onChange} onBlur={onBlur} leftIcon={<Ionicons name="layers-outline" size={18} color="#94A3B8" />} />
-          )} />
+          <Controller
+            control={control}
+            name="quantityInStock"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                label="Quantity in Stock (optional)"
+                placeholder="e.g. 50"
+                keyboardType="numeric"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                leftIcon={<Ionicons name="layers-outline" size={18} color="#94A3B8" />}
+              />
+            )}
+          />
         </View>
 
         <Button
           title="Add Product"
-          fullWidth size="lg"
+          fullWidth
+          size="lg"
           loading={createMutation.isPending}
           onPress={handleSubmit(onSubmit)}
           style={{ marginTop: 8 }}
@@ -176,15 +264,49 @@ export function AddProductScreen() {
 const styles = StyleSheet.create({
   scroll: { padding: 16, paddingBottom: 40 },
   section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 13, fontWeight: '800', color: '#64748B', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#64748B',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 12,
+  },
   imageRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   imageThumbWrap: { position: 'relative' },
   imageThumb: { width: 80, height: 80, borderRadius: 12 },
-  imageRemove: { position: 'absolute', top: -6, right: -6, width: 20, height: 20, borderRadius: 10, backgroundColor: '#F43F5E', alignItems: 'center', justifyContent: 'center' },
-  imagePicker: { width: 80, height: 80, borderRadius: 12, borderWidth: 2, borderColor: '#E2E8F0', borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center', gap: 4 },
+  imageRemove: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#F43F5E',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imagePicker: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E2E8F0',
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
   imagePickerText: { fontSize: 9, color: '#94A3B8', fontWeight: '700', textAlign: 'center' },
   catGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  catChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F8FAFC', borderWidth: 1.5, borderColor: '#E2E8F0' },
+  catChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+  },
   catChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   catChipText: { fontSize: 12, fontWeight: '700', color: '#64748B' },
   catChipTextActive: { color: '#fff' },

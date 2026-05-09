@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  View, Text, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView,
-  Platform, StyleSheet, ActivityIndicator,
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -120,7 +127,11 @@ export function ChatConversationScreen() {
             multiline
             maxLength={1000}
           />
-          <TouchableOpacity onPress={handleSend} disabled={!text.trim() || isSending} style={[styles.sendBtn, { opacity: text.trim() ? 1 : 0.4 }]}>
+          <TouchableOpacity
+            onPress={handleSend}
+            disabled={!text.trim() || isSending}
+            style={[styles.sendBtn, { opacity: text.trim() ? 1 : 0.4 }]}
+          >
             <Ionicons name="send" size={18} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
@@ -130,12 +141,35 @@ export function ChatConversationScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: '#F1F5F9' },
-  backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: '#F8FAFC', alignItems: 'center', justifyContent: 'center' },
+  header: {
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   headerName: { fontSize: 15, fontWeight: '800', color: COLORS.primary },
   typingText: { fontSize: 11, color: '#10B981', fontWeight: '600' },
   onlineText: { fontSize: 11, color: '#10B981', fontWeight: '600' },
-  headerBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: '#F8FAFC', alignItems: 'center', justifyContent: 'center' },
+  headerBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   msgList: { padding: 16, gap: 10, paddingBottom: 20 },
   msgWrap: { flexDirection: 'row', alignItems: 'flex-end', gap: 6 },
   msgLeft: { justifyContent: 'flex-start' },
@@ -143,11 +177,42 @@ const styles = StyleSheet.create({
   msgAvatar: { marginBottom: 4 },
   bubble: { maxWidth: '75%', borderRadius: 18, padding: 12 },
   bubbleOwn: { backgroundColor: COLORS.accent, borderBottomRightRadius: 4 },
-  bubbleOther: { backgroundColor: '#fff', borderBottomLeftRadius: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 1 },
+  bubbleOther: {
+    backgroundColor: '#fff',
+    borderBottomLeftRadius: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
+  },
   bubbleText: { fontSize: 14, color: '#1E293B', lineHeight: 20 },
   bubbleTime: { fontSize: 10, color: '#94A3B8', marginTop: 4, alignSelf: 'flex-end' },
-  inputWrap: { backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#F1F5F9' },
-  inputBox: { flexDirection: 'row', alignItems: 'flex-end', gap: 10, backgroundColor: '#F8FAFC', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 8, borderWidth: 1, borderColor: '#E2E8F0' },
+  inputWrap: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 10,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
   textInput: { flex: 1, color: COLORS.primary, fontSize: 14, maxHeight: 100 },
-  sendBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.accent, alignItems: 'center', justifyContent: 'center' },
+  sendBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
