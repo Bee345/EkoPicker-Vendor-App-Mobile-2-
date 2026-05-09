@@ -1,0 +1,124 @@
+TrustBase Backend Implementation Plan
+
+1. Architecture Overview
+Tech Stack:
+- Runtime: Node.js
+- Framework: Express.js
+- Database: PostgreSQL via Supabase
+- Authentication: Supabase Auth + Twilio (SMS OTP)
+- Real-time: Socket.io
+- Payments: Paystack
+- Storage: Supabase Storage (for evidence images)
+
+High-Level Flow:
+1. Client (React) communicates with Express API via REST and establishes a WebSocket connection for real-time events.
+2. Express API handles business logic, input validation, risk score calculation, and Paystack webhooks.
+3. Supabase serves as the primary data store (PostgreSQL) and handles image storage.
+4. External services: Twilio for OTP delivery, Paystack for payments.
+
+2. Database Schema (PostgreSQL)
+
+Users Table (users):
+- id (UUID, Primary Key)
+- phone (String, Unique)
+- full_name (String, nullable)
+- role (Enum: 'user', 'admin')
+- trust_score (Integer, default 0)
+- is_verified (Boolean, default false)
+- verification_type (Enum: 'individual', 'business', null)
+- created_at (Timestamp)
+
+Businesses Table (businesses):
+- id (UUID, Primary Key)
+- owner_id (UUID, Foreign Key -> users.id)
+- name (String)
+- cac_number (String, nullable)
+- category (String)
+- trust_score (Integer)
+- created_at (Timestamp)
+
+Reports Table (reports):
+- id (UUID, Primary Key)
+- reporter_id (UUID, Foreign Key -> users.id)
+- target_phone (String, nullable)
+- target_business_id (UUID, nullable, Foreign Key -> businesses.id)
+- scam_type (Enum: 'online', 'pos', 'loan', 'product', 'job', etc.)
+- amount_lost (Decimal)
+- description (Text)
+- evidence_urls (Array of Strings)
+- is_anonymous (Boolean)
+- status (Enum: 'under_review', 'published', 'rejected')
+- risk_level (Enum: 'high', 'medium', 'low')
+- upvotes_count (Integer, default 0)
+- location (String)
+- created_at (Timestamp)
+
+Comments Table (comments):
+- id (UUID, Primary Key)
+- report_id (UUID, Foreign Key -> reports.id)
+- user_id (UUID, Foreign Key -> users.id)
+- content (Text)
+- likes_count (Integer, default 0)
+- created_at (Timestamp)
+
+Verification Requests (verification_requests):
+- id (UUID, Primary Key)
+- user_id (UUID, Foreign Key -> users.id)
+- plan_type (Enum: 'individual', 'business')
+- status (Enum: 'pending_payment', 'under_review', 'approved', 'rejected')
+- paystack_reference (String)
+- created_at (Timestamp)
+
+3. Authentication Flow (Twilio + Supabase)
+1. Initiate Login: User enters phone number on the frontend.
+2. Generate OTP: Express API receives request, generates a secure 6-digit OTP, stores it temporarily with an expiration, and triggers Twilio to send the SMS.
+3. Verify OTP: User submits OTP; Express API validates it against the stored value.
+4. Session Creation: If valid, the API uses Supabase Auth (Admin API) to sign in or create the user, returning a JWT session token to the client.
+
+4. REST APIs
+
+Auth Routes (/api/auth):
+- POST /request-otp: Send SMS via Twilio.
+- POST /verify-otp: Validate OTP and return JWT.
+
+User Routes (/api/users):
+- GET /me: Retrieve current user profile.
+- PUT /me: Update profile settings, such as privacy preferences and name.
+
+Report Routes (/api/reports):
+- POST /: Submit a new scam report, handling image URLs.
+- GET /: Fetch reports with support for filtering by risk, type, location, and pagination.
+- GET /:id: Retrieve specific report details along with associated comments.
+- POST /:id/upvote: Upvote a report.
+- POST /:id/comments: Add a comment to a report.
+
+Search Routes (/api/search):
+- GET /: Search by phone number or business name, returning risk assessment and aggregated report statistics.
+
+Verification & Payments (/api/verification):
+- POST /initiate: Initialize Paystack transaction for individual or business verification, returning payment URL/reference.
+- POST /webhook/paystack: Secure webhook endpoint for Paystack to notify backend of successful payment, updating verification_requests status and user role.
+
+5. Real-time Notifications (Socket.io)
+
+Events Emitted to Clients:
+- new_report_alert: Broadcast to users in a specific region when a high‑risk report is published.
+- report_status_update: Sent to a specific user when their submitted report changes status.
+- new_comment: Sent to a report author when someone comments on their report.
+
+Socket Implementation:
+- Users authenticate their socket connection using their JWT.
+- Users join specific "rooms" based on location for proximity alerts and on user ID for direct alerts.
+
+6. Security
+- Rate Limiting: Implement express-rate-limit to protect OTP endpoints and prevent spammy report submissions.
+- Input Validation: Use Zod or Joi schemas for strict validation of all incoming request bodies.
+- Webhooks: Validate Paystack webhook signatures using the Paystack secret key.
+- CORS: Restrict API access to the trusted frontend origin domains.
+- Data Masking: If a report is marked as anonymous, strip user details before returning data to the frontend.
+
+7. Deployment
+- Hosting: Deploy the Express API on Render or Heroku using a Docker container or direct Node.js environment.
+- Database: Supabase managed PostgreSQL instance.
+- Environment Variables: Securely store DATABASE_URL, TWILIO_SID, PAYSTACK_SECRET, SUPABASE_KEY, etc., within the hosting provider.
+- CI/CD: Configure GitHub Actions to run linting and unit tests on pull requests and automatically deploy the main branch to production.

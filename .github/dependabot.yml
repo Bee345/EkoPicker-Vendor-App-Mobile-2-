@@ -1,0 +1,32 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: 'Africa/Lagos'
+    open-pull-requests-limit: 5
+    groups:
+      expo:
+        patterns: ['expo*', '@expo/*']
+      react:
+        patterns: ['react', 'react-dom', 'react-native', 'react-native-*']
+      navigation:
+        patterns: ['@react-navigation/*']
+      tooling:
+        patterns: ['eslint*', '@typescript-eslint/*', 'prettier', 'husky', 'lint-staged', 'jest*']
+      types:
+        patterns: ['@types/*']
+    ignore:
+      # Pin Expo & RN majors to whatever the SDK supports — Expo upgrades are coordinated.
+      - dependency-name: 'expo'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-native'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly

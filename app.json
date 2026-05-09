@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "EkoPicker Vendor",
+    "slug": "ekopicker-vendor",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.ekopicker.vendor"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0F172A"
+      },
+      "package": "com.ekopicker.vendor"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow EkoPicker Vendor to access your photos to upload product images.",
+          "cameraPermission": "Allow EkoPicker Vendor to access your camera to take product photos."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ekopicker-vendor"
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# Conventional Commits enforcement (lightweight).
+# Allowed: feat, fix, chore, docs, style, refactor, test, perf, build, ci, revert
+commit_regex='^(feat|fix|chore|docs|style|refactor|test|perf|build|ci|revert)(\(.+\))?: .{1,100}'
+error_msg="Commit message must follow Conventional Commits — e.g. 'feat: add forgot-password screen'."
+
+if ! grep -qE "$commit_regex" "$1"; then
+  echo "$error_msg"
+  exit 1
+fi

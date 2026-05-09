@@ -1,0 +1,53 @@
+Backend Cost and Scope
+
+Required Tools and Services:
+- Supabase (PostgreSQL): Core relational database for Users, Reports, Comments, and Businesses. Handles complex joins and location-based queries for proximity alerts.
+- Supabase Auth: Manages user identity, sessions, and secure login workflows.
+- Twilio: Required for SMS OTP (One-Time Password) delivery for phone-based authentication.
+- Supabase Storage / AWS S3: Secure cloud storage for user‑uploaded evidence images (screenshots, chat logs, receipts) attached to scam reports.
+- Node.js + Express: Core backend framework to handle custom API logic, risk score calculation, and payment webhooks.
+- Socket.io / Supabase Realtime: Enables real‑time notifications for in‑app inbox, "Scam reported near you" alerts, and community engagement updates.
+- Paystack: Payment gateway integration for processing one‑time verification fees (Individual & Business plans) in Naira.
+- Render / Heroku (Cloud): Highly available cloud hosting for the Node.js/Express backend API and WebSocket server.
+- Resend / SendGrid: Transactional email service for verification status updates, security alerts, and data export deliveries.
+- Algolia / Typesense: Specialized search engine for fast, typo‑tolerant (fuzzy) searching of phone numbers and business names across large datasets.
+- Sentry: Error tracking, logging, and performance monitoring for the backend API to ensure system reliability.
+- Cloudflare: Web Application Firewall (WAF) and DDoS protection to secure the API against malicious scraping and attacks.
+- GitHub Actions: CI/CD pipeline for automated testing, linting, and deployment of backend updates.
+
+Backend Development Phases:
+Phase 1: Core Architecture & Database Setup
+  Tasks: Initialize project structure, set up Supabase PostgreSQL schema (Users, Reports, Businesses), configure environment variables, and establish local development environment.
+  Complexity: Medium
+  Timeline: 3 – 5 days
+Phase 2: Authentication & User Management
+  Tasks: Implement phone‑based signup/login via Twilio OTP, configure Supabase Auth, build user profile endpoints, and set up Role‑Based Access Control (RBAC) for privacy settings.
+  Complexity: Medium
+  Timeline: 4 – 6 days
+Phase 3: Reporting Engine & File Storage
+  Tasks: Develop endpoints for submitting multi‑step scam reports, integrate cloud storage for evidence uploads, implement anonymous reporting logic, and create comment/upvote functionality.
+  Complexity: High
+  Timeline: 6 – 8 days
+Phase 4: Search & Risk Calculation
+  Tasks: Integrate specialized search (Algolia or PostgreSQL full‑text search), develop the Risk Score algorithm (High/Medium/Low), and build advanced filtering endpoints.
+  Complexity: High
+  Timeline: 5 – 7 days
+Phase 5: Verification & Payment Integration
+  Tasks: Build business/individual verification workflows, integrate Paystack for one‑time payments, handle payment webhooks securely, and update user trust badges.
+  Complexity: High
+  Timeline: 5 – 7 days
+Phase 6: Real‑time Notifications & Email
+  Tasks: Set up Socket.io/Supabase Realtime for in‑app alerts, build geo‑based query logic for proximity alerts, and integrate transactional email service for updates.
+  Complexity: Medium
+  Timeline: 4 – 6 days
+Phase 7: Testing, Security & Deployment
+  Tasks: Implement rate limiting, write unit/integration tests, set up Sentry monitoring, configure CI/CD via GitHub Actions, and deploy to staging/production servers.
+  Complexity: Medium
+  Timeline: 4 – 6 days
+
+Risks and Scalability Notes:
+- Data Accuracy & Moderation: Malicious users might submit false or retaliatory reports. Implement automated abuse‑detection, rate limiting, and a manual moderation queue/appeals process.
+- Search Performance: As the dataset grows, ensure search remains performant by offloading queries to a dedicated search engine early.
+- Real‑time Overhead: Proximity alerts require geospatial queries (PostGIS) which may become expensive; consider caching or background processing.
+- Storage Costs: Evidence image uploads can increase costs; enforce client‑side and server‑side compression, format restrictions, and lifecycle policies.
+- Security & Liability: Handling sensitive data requires strict CORS policies, rigorous input validation, robust JWT management, and WAF protection.
