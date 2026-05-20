@@ -33,7 +33,8 @@
           "photosPermission": "Allow EkoPicker Vendor to access your photos to upload product images.",
           "cameraPermission": "Allow EkoPicker Vendor to access your camera to take product photos."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "eas": {

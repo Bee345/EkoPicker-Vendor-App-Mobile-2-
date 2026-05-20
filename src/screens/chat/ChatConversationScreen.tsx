@@ -32,7 +32,7 @@ export function ChatConversationScreen() {
   const { messagesQuery, sendMessage, notifyTyping, isSending } = useChat(chatId);
   const [text, setText] = useState('');
   const flatRef = useRef<FlatList>(null);
-  const typingTimer = useRef<ReturnType<typeof setTimeout>>();
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const messages = messagesQuery.data ?? [];
   const isTyping = typingUsers[chatId];

@@ -116,4 +116,7 @@ If a step breaks beyond fixing in 30 minutes:
 
 | Date | Step | Outcome | Notes |
 | ---- | ---- | ------- | ----- |
-|      |      |         |       |
+| 2026-05-20 | Step 1 — SDK 51 → 52 | ✅ Done | RN 0.74.5 → 0.76.9, React 18.2 → 18.3.1, reanimated 3.10 → 3.16, screens 3 → 4. `expo-font` plugin auto-added to app.json. TypeScript clean. |
+| 2026-05-20 | Step 2 — SDK 52 → 53 | ✅ Done | RN 0.76.9 → 0.79.6, React 18.3 → **19.0.0** (major). Fixed: `useRef<T>()` → `useRef<T \| undefined>(undefined)` in ChatConversationScreen (React 19 removed zero-arg overload). TypeScript clean. |
+| 2026-05-20 | Step 3 — SDK 53 → 54 | ✅ Done | RN 0.79.6 → 0.81.5, React 19.0 → 19.1. **reanimated 3 → 4** (major — worklets extracted to separate peer package). TypeScript clean. |
+| 2026-05-20 | Step 4 — SDK 54 → 55 | ✅ Done | RN 0.81.5 → 0.83.6, React 19.1 → 19.2. Installed `react-native-worklets@0.8.3` (reanimated v4 peer dep, missed by `expo install --fix`). TypeScript clean. **Ready for boot test.** |

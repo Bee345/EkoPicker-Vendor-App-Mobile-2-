@@ -1,5 +1,27 @@
 {
   "permissions": {
-    "allow": ["Bash(npx expo *)"]
+    "allow": [
+      "Bash(npx expo *)",
+      "Bash(findstr -i \"PDATE\\\\|UPDATE\\\\|TASKS\\\\|PROCESS\")",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\HP\\\\Downloads\\\\EkoPicker Vendor App Mobile \\(2\\)\" -File)",
+      "Bash(Select-Object Name)",
+      "PowerShell(npm *)",
+      "PowerShell(node -e \"console.log\\(require\\('./node_modules/expo/package.json'\\).version\\)\")",
+      "PowerShell(node -e \"['expo','react-native','react','react-native-reanimated','react-native-screens','react-native-gesture-handler'].forEach\\(p => { try { console.log\\(p + ': ' + require\\('./node_modules/' + p + '/package.json'\\).version\\) } catch\\(e\\) { console.log\\(p + ': NOT FOUND'\\) } }\\)\")",
+      "PowerShell(node -e \"const p = require\\('./package.json'\\); const keys = ['expo','react','react-native','react-native-reanimated','react-native-screens','react-native-gesture-handler','react-native-safe-area-context','expo-font','expo-image-picker','expo-secure-store','expo-status-bar','expo-linking','@expo/metro-runtime','@expo/vector-icons','nativewind','@react-native-community/netinfo']; keys.forEach\\(k => { const v = p.dependencies[k] || p.devDependencies[k]; if\\(v\\) console.log\\(k + ': ' + v\\) }\\)\")",
+      "PowerShell(node -e \"['nativewind','socket.io-client','@react-native-async-storage/async-storage'].forEach\\(p => { try { console.log\\(p + ': ' + require\\('./node_modules/' + p + '/package.json'\\).version\\) } catch\\(e\\) { console.log\\(p + ': NOT FOUND'\\) } }\\)\")",
+      "PowerShell(node -e \"const p = require\\('./node_modules/@react-native-async-storage/async-storage/package.json'\\); console.log\\('async-storage:', p.version, '\\\\npeerDeps:', JSON.stringify\\(p.peerDependencies\\)\\)\")",
+      "PowerShell(node -e \"['@tanstack/react-query-persist-client','@tanstack/query-async-storage-persister','@tanstack/react-query'].forEach\\(p => { try { const pkg = require\\('./node_modules/' + p + '/package.json'\\); console.log\\(p + ': ' + pkg.version\\) } catch\\(e\\) { console.log\\(p + ': NOT FOUND'\\) } }\\)\")",
+      "PowerShell(npm install *)",
+      "PowerShell($env:NODE_OPTIONS = '--max-old-space-size=4096'; cd \"C:\\\\Users\\\\HP\\\\Downloads\\\\EkoPicker Vendor App Mobile \\(2\\)\"; npx expo install --fix -- --legacy-peer-deps 2>&1)",
+      "PowerShell($env:NODE_OPTIONS = '--max-old-space-size=4096'; cd \"C:\\\\Users\\\\HP\\\\Downloads\\\\EkoPicker Vendor App Mobile \\(2\\)\"; npx tsc --noEmit 2>&1)",
+      "PowerShell(node -e \"['expo','react','react-native','react-native-reanimated'].forEach\\(p => { try { console.log\\(p + ': ' + require\\('./node_modules/' + p + '/package.json'\\).version\\) } catch\\(e\\) {} }\\)\")",
+      "PowerShell(node -e \"['expo','react','react-native','react-native-reanimated','nativewind'].forEach\\(p => { try { console.log\\(p + ': ' + require\\('./node_modules/' + p + '/package.json'\\).version\\) } catch\\(e\\) {} }\\)\")",
+      "PowerShell(node -e \"try { require\\('./node_modules/react-native-reanimated/plugin'\\); console.log\\('plugin OK'\\) } catch\\(e\\) { console.log\\('plugin ERROR:', e.message\\) }\")",
+      "PowerShell(node -e \"try { require\\('./node_modules/react-native-reanimated/plugin'\\); console.log\\('reanimated plugin OK'\\) } catch\\(e\\) { console.log\\('ERROR:', e.message\\) }\"; node -e \"console.log\\('worklets: ' + require\\('./node_modules/react-native-worklets/package.json'\\).version\\)\")",
+      "Bash(git config *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
   }
 }
