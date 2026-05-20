@@ -68,6 +68,7 @@ Password: password123
 ├── jest.config.js           # jest-expo preset, moduleNameMapper for @/* alias
 ├── jest.setup.js            # @testing-library/jest-native setup
 ├── API_SPECIFICATION.md     # REST + Socket.io contract (source of truth for backend)
+├── DEVLOG.md                # Running session log — decisions, setup steps, outstanding TODOs
 ├── BACKEND_IMPLEMENTATION_PLAN.txt  # NOTE: describes a different "TrustBase" project — see warning below
 ├── BACKEND_COST_SCOPE.txt   # Same TrustBase doc — out of scope for this app
 └── src/
@@ -273,6 +274,7 @@ If a task has no recommendation column filled in, default to **Sonnet 4.6**.
 | `SERVER_SETUP.md` | One-time manual steps for SonarCloud / Sentry / EAS / Apple / Google / GCP. |
 | `SCALE.md` | Production-scale playbook — what mobile already does, what backend must do, load-test scenario, cost ceilings. |
 | `API_SPECIFICATION.md` | Original short spec — kept for history; `API_DOCS.md` supersedes. |
+| `DEVLOG.md` | Running session log — decisions, setup steps, outstanding TODOs. Newest entries at the top. |
 | `BACKEND_IMPLEMENTATION_PLAN.txt` / `BACKEND_COST_SCOPE.txt` | ❌ Unrelated ("TrustBase"). Ignore. |
 
 ---

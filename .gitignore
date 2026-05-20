@@ -14,9 +14,20 @@ web-build/
 .env.*.local
 .DS_Store
 
-# Markdown docs
+# Markdown docs (project docs are tracked; only generated/temp .md files are blocked)
 *.md
 !README.md
+!CLAUDE.md
+!DEVLOG.md
+!UPGRADE.md
+!TASKS.md
+!PRODUCTION_READINESS.md
+!ARCHITECTURE.md
+!API_DOCS.md
+!PROCESS_PLAN.md
+!SERVER_SETUP.md
+!SCALE.md
+!API_SPECIFICATION.md
 
 # Test / coverage
 coverage/
