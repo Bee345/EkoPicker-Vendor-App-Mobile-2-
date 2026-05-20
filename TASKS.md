@@ -54,6 +54,7 @@ When in doubt, start with Sonnet 4.6 — it covers most engineering work.
 | P1-11 | TLS certificate pinning on the API host (mitigates MITM on hostile WiFi) | Sonnet 4.6 — needs custom dev client (Expo prebuild) | Open |
 | P1-12 | i18n scaffolding (`i18next` + `react-i18next`) — extract every hardcoded English string. Yoruba/Igbo/Hausa to follow | Sonnet 4.6 (codemod-heavy) | Open |
 | P1-13 | Convert `useOrders` / `useProducts` / `useChats` to `useInfiniteQuery` for proper pagination | Sonnet 4.6 | Open |
+| P1-14 | Pin dev-deps to versions matching Expo SDK 51: `eslint-config-expo@~7.1.2`, `jest@^29.4.0`, `jest-expo@~51.0.4`, `expo-image-picker@~15.1.0`. Run `npx expo install --check` to verify. | Haiku 4.5 | Open |
 
 ## P2 — Medium priority (tech debt, ergonomics)
 

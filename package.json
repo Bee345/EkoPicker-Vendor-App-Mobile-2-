@@ -30,7 +30,7 @@
     "@tanstack/react-query-persist-client": "^5.100.9",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
-    "expo": "~51.0.28",
+    "expo": "^52.0.0",
     "expo-font": "~12.0.9",
     "expo-image-picker": "~15.0.7",
     "expo-linking": "~6.3.1",
