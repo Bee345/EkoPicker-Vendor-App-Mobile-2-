@@ -14,6 +14,10 @@ web-build/
 .env.*.local
 .DS_Store
 
+# Markdown docs
+*.md
+!README.md
+
 # Test / coverage
 coverage/
 reports/
